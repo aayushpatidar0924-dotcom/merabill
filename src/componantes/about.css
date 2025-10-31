@@ -1,0 +1,111 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px 10%;
+  background: linear-gradient(135deg, #eef2ff 0%, #f9fafb 100%);
+  overflow: hidden;
+}
+
+/* 🧾 Main Content */
+.about-content {
+  max-width: 800px;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.about-content h1 {
+  font-size: 3rem;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.about-content h1::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background-color: #6366f1;
+  border-radius: 2px;
+}
+
+.about-content p {
+  font-size: 1.2rem;
+  color: #374151;
+  margin-top: 20px;
+  line-height: 1.8;
+}
+
+/* 💻 Image Section */
+.about-image {
+  margin: 40px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.about-image img {
+  width: 40%;
+  max-width: 600px;
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.about-image img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 🌟 Info Cards */
+.about-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.about-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+  padding: 30px;
+  width: 300px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.about-card:hover {
+  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
+}
+
+.about-card h3 {
+  font-size: 1.5rem;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.about-card p {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+/* 📱 Responsive */
+@media (max-width: 900px) {
+  .about-content h1 {
+    font-size: 2.4rem;
+  }
+
+  .about-content p {
+    font-size: 1.1rem;
+  }
+
+  .about-card {
+    width: 90%;
+  }
+}
