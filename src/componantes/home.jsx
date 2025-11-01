@@ -9,7 +9,7 @@ import "./home.css";
 function Home() {
   return (
     <div className="home-container">
-      {/* 🌟 Hero Section */}
+      {/*  Hero Section */}
     <motion.section
       className="hero"
       initial={{ opacity: 0, y: -50 }}

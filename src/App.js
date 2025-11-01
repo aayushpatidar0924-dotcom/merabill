@@ -1,4 +1,5 @@
 import React from "react";
+import "./i18n";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Navbar from './componantes/Nav_bar';
@@ -7,7 +8,7 @@ import Home from './componantes/home';
 import About from './componantes/about';
 import Contact from './componantes/contact';
 import Login from './componantes/login';
-import SingUp from './componantes/sign up';
+import Signup from "./componantes/sign up";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/singup" element={<SingUp />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
       <Footer />
     </Router>

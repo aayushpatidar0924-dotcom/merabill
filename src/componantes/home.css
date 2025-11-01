@@ -8,7 +8,7 @@
 }
 
 /* Hero Section */
-/* 🌟 Hero Section */
+
 .hero {
   background: url("https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg") no-repeat center center/cover;
 
@@ -21,7 +21,7 @@
 }
 
 
-/* 🔷 Overlay for blur and dim effect */
+/* Overlay for blur and dim effect */
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -35,7 +35,7 @@
   justify-content: center;
 }
 
-/* ✨ Content styling */
+/*  Content styling */
 .hero-content {
   z-index: 2;
   max-width: 700px;
@@ -57,7 +57,7 @@
   color: #e2e8f0;
 }
 
-/* 🚀 Button design */
+/*  Button design */
 .hero-btn {
   background-color: #6366f1;
   color: white;

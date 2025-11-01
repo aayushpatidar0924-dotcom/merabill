@@ -1,4 +1,4 @@
-/* 🌈 Background Theme */
+/*  Background Theme */
 .contact-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #1e1f29, #282a36, #3a3d52);
@@ -11,7 +11,7 @@
   overflow-x: hidden;
 }
 
-/* ✨ Heading Section */
+/*  Heading Section */
 .contact-heading {
   font-size: 2.8rem;
   font-weight: 700;
@@ -29,7 +29,7 @@
   margin-bottom: 40px;
 }
 
-/* 📩 Contact Info */
+/*  Contact Info */
 .contact-info {
   display: flex;
   justify-content: center;
@@ -61,7 +61,7 @@
   color: #00d4ff;
 }
 
-/* 💬 Help Form Section */
+/*  Help Form Section */
 .help-container {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -125,7 +125,7 @@
   box-shadow: 0 0 20px rgba(255, 126, 179, 0.6);
 }
 
-/* 📱 Responsive */
+/*  Responsive */
 @media (max-width: 768px) {
   .contact-info {
     flex-direction: column;

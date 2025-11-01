@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import "./sign up.css";
+import "./signup.css"; 
 
 function Signup() {
   const [role, setRole] = useState("manager");
@@ -8,6 +8,7 @@ function Signup() {
     { id: 1, name: "Tech Solutions Pvt Ltd" },
     { id: 2, name: "Billing Hub India" },
     { id: 3, name: "Digital Accountz" },
+    { id: 4, name: "JIT Borawan" },
   ]);
 
   const handleSubmit = (e) => {
@@ -72,7 +73,11 @@ function Signup() {
             </motion.select>
           )}
 
-          <motion.button className="signup-btn" whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+          <motion.button
+            className="signup-btn"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Sign Up 🚀
           </motion.button>
         </form>

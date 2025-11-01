@@ -6,7 +6,6 @@ import invoiceImage from "../images/invoice-laptop.jpg";
 function About() {
   return (
     <section className="about">
-      {/* ✨ Left Text Section */}
       <motion.div
         className="about-content"
         initial={{ opacity: 0, x: -120 }}
@@ -43,7 +42,7 @@ function About() {
         </motion.p>
       </motion.div>
 
-      {/* 💻 Right Image Section */}
+      
       <motion.div
         className="about-image"
         initial={{ opacity: 0, x: 120 }}
@@ -58,7 +57,6 @@ function About() {
         />
       </motion.div>
 
-      {/* 🌟 Info Cards Section */}
       <motion.div
         className="about-cards"
         initial={{ opacity: 0, y: 60 }}
