@@ -1,0 +1,151 @@
+/* 🌈 Signup Page Full Modern CSS */
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* ===== Base Setup ===== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+  background-size: 300% 300%;
+  animation: bgMove 10s ease infinite;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animation for Background */
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== Page Layout ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== Signup Card ===== */
+.signup-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 40px 35px;
+  color: #f8fafc;
+  text-align: center;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+  animation: fadeIn 0.9s ease forwards;
+  transform: translateY(20px);
+}
+
+/* ===== Animation for Card ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Headings ===== */
+.signup-card h2 {
+  font-size: 1.9rem;
+  margin-bottom: 25px;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ===== Input Fields ===== */
+.signup-card input,
+.signup-card select {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.signup-card input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.signup-card input:focus,
+.signup-card select:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.7);
+}
+
+/* ===== Button ===== */
+.signup-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb, #1e40af);
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.signup-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.6);
+}
+
+/* ===== Small Text / Links ===== */
+.signup-card p {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.signup-card a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.signup-card a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .signup-card {
+    padding: 30px 25px;
+  }
+
+  .signup-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .signup-card input {
+    padding: 10px;
+  }
+
+  .signup-btn {
+    padding: 10px;
+  }
+}

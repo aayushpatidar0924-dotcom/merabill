@@ -1,0 +1,143 @@
+/* 🌈 Background Theme */
+.contact-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1f29, #282a36, #3a3d52);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ✨ Heading Section */
+.contact-heading {
+  font-size: 2.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #00d4ff, #ff7eb3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.contact-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-bottom: 40px;
+}
+
+/* 📩 Contact Info */
+.contact-info {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-bottom: 60px;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 25px 35px;
+  text-align: center;
+  width: 250px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 6px 25px rgba(255, 126, 179, 0.3);
+}
+
+.info-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #00d4ff;
+}
+
+/* 💬 Help Form Section */
+.help-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 25px;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.help-container h2 {
+  font-size: 2rem;
+  color: #ff7eb3;
+  margin-bottom: 8px;
+}
+
+.help-container p {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.help-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.help-form input,
+.help-form textarea {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 15px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.help-form input:focus,
+.help-form textarea:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 10px #00d4ff;
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #00d4ff, #ff7eb3);
+  border: none;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.send-btn:hover {
+  background: linear-gradient(135deg, #ff7eb3, #00d4ff);
+  box-shadow: 0 0 20px rgba(255, 126, 179, 0.6);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .contact-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-heading {
+    font-size: 2rem;
+  }
+
+  .help-container {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}
