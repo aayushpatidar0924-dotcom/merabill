@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-/*  Main Content */
+/*  main content */
 .about-content {
   max-width: 800px;
   text-align: center;
@@ -40,7 +40,7 @@
   line-height: 1.8;
 }
 
-/* Image Section */
+/* Img section */
 .about-image {
   margin: 40px 0;
   display: flex;
@@ -60,7 +60,7 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
-/*  Info Cards */
+/*  info cards */
 .about-cards {
   display: flex;
   justify-content: center;
@@ -95,7 +95,7 @@
   line-height: 1.6;
 }
 
-/* Responsive */
+ /* responsive  */
 @media (max-width: 900px) {
   .about-content h1 {
     font-size: 2.4rem;

@@ -11,7 +11,7 @@ function Contact() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      {/* Header Section */}
+      {/* header section */}
       <motion.h1
         className="contact-heading"
         initial={{ y: -50, opacity: 0 }}
@@ -24,7 +24,7 @@ function Contact() {
         We’d love to hear from you — let’s make billing simple together!
       </p>
 
-      {/* Contact Info Section */}
+      {/* contact info section */}
       <motion.div
         className="contact-info"
         initial={{ opacity: 0, y: 40 }}
@@ -50,7 +50,7 @@ function Contact() {
         </motion.div>
       </motion.div>
 
-      {/* Help Form Section */}
+      {/* help form section */}
       <motion.div
         className="help-container"
         initial={{ opacity: 0, scale: 0.9 }}

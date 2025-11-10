@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import "./signup.css"; 
+import "./signup.css";
 
 function Signup() {
   const [role, setRole] = useState("manager");
@@ -10,10 +10,42 @@ function Signup() {
     { id: 3, name: "Digital Accountz" },
     { id: 4, name: "JIT Borawan" },
   ]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    organization: "",
+  });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Signup successful as ${role.toUpperCase()}`);
+
+    try {
+      const res = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          role,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("🎉 Signup successful!");
+        window.location.href = "/login";
+      } else {
+        alert("❌ " + data.message);
+      }
+    } catch (err) {
+      alert("⚠️ Error connecting to server");
+      console.error(err);
+    }
   };
 
   return (
@@ -48,25 +80,60 @@ function Signup() {
         </div>
 
         <form onSubmit={handleSubmit} className="signup-form">
-          <motion.input type="text" placeholder="Full Name" required whileFocus={{ scale: 1.05 }} />
-          <motion.input type="email" placeholder="Email Address" required whileFocus={{ scale: 1.05 }} />
-          <motion.input type="tel" placeholder="Phone Number" required whileFocus={{ scale: 1.05 }} />
-          <motion.input type="password" placeholder="Password" required whileFocus={{ scale: 1.05 }} />
+          <motion.input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
+            onChange={handleChange}
+            whileFocus={{ scale: 1.05 }}
+          />
+          <motion.input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            required
+            onChange={handleChange}
+            whileFocus={{ scale: 1.05 }}
+          />
+          <motion.input
+            type="tel"
+            name="phone"
+            placeholder="Phone Number"
+            required
+            onChange={handleChange}
+            whileFocus={{ scale: 1.05 }}
+          />
+          <motion.input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            onChange={handleChange}
+            whileFocus={{ scale: 1.05 }}
+          />
 
           {role === "manager" && (
             <motion.input
               type="text"
+              name="organization"
               placeholder="Organization Name"
               required
+              onChange={handleChange}
               whileFocus={{ scale: 1.05 }}
             />
           )}
 
           {role === "worker" && (
-            <motion.select required whileFocus={{ scale: 1.05 }}>
+            <motion.select
+              name="organization"
+              required
+              onChange={handleChange}
+              whileFocus={{ scale: 1.05 }}
+            >
               <option value="">Select Organization</option>
               {orgList.map((org) => (
-                <option key={org.id} value={org.id}>
+                <option key={org.id} value={org.name}>
                   {org.name}
                 </option>
               ))}

@@ -35,7 +35,7 @@ function Navbar() {
         <li><Link to="/login">{t("Login")}</Link></li>
         <li><Link to="/signup">{t("Sign Up")}</Link></li>
 
-        {/* 🌐 Language Switcher */}
+        {/*  Language Switcher */}
         <li className="language-select">
           <select
             onChange={(e) => changeLanguage(e.target.value)}

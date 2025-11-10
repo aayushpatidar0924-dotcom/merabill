@@ -12,20 +12,15 @@ function Footer() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        {/*  Left Section */}
+        {/*  left section */}
         <div className="footer-brand">
           <h2>Mera Bill</h2>
           <p>Smart Billing. Simple Management. Total Control.</p>
         </div>
 
-        {/*  Navigation Links */}
-        <div className="footer-links">
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-        </div>
+       
 
-        {/*  Social Media */}
+        {/*  social media */}
         <div className="footer-socials">
           <motion.a whileHover={{ scale: 1.2 }} href="#">
             <FaFacebook />
@@ -42,7 +37,7 @@ function Footer() {
         </div>
       </motion.div>
 
-      {/*  Bottom Strip */}
+      {/*  bottom strip */}
       <motion.div
         className="footer-bottom"
         initial={{ opacity: 0 }}

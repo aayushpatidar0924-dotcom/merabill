@@ -34,13 +34,6 @@ function Home() {
             Next-Gen Billing & Invoice Automation for Modern Organizations
           </motion.p>
 
-          <motion.button
-            className="hero-btn"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Explore Now 🚀
-          </motion.button>
         </div>
       </div>
     </motion.section>
