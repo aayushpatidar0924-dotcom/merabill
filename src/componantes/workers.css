@@ -1,0 +1,41 @@
+.workers-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1f29, #282a36, #3a3d52);
+  color: white;
+  padding: 40px;
+  font-family: "Poppins", sans-serif;
+}
+
+.worker-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.worker-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  width: 220px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.worker-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 10px #00d4ff;
+}
+
+.worker-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.error-text {
+  color: #ff7eb3;
+  text-align: center;
+  margin-bottom: 20px;
+}

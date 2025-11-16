@@ -1,9 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import "./about.css";
 import invoiceImage from "../images/invoice-laptop.jpg";
 
 function About() {
+  const { t } = useTranslation();
+
   return (
     <section className="about">
       <motion.div
@@ -17,7 +20,7 @@ function About() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          About Mera Bill
+          {t("About Mera Bill")}
         </motion.h1>
 
         <motion.p
@@ -25,10 +28,10 @@ function About() {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
-          <strong>Mera Bill</strong> is a smart billing and invoice management web
-          app built for organizations and startups. It automates billing,
-          tracks transactions, and keeps your accounts up to date with
-          next-gen analytics and security.
+          <strong>{t("Mera Bill")}</strong>{" "}
+          {t(
+            "is a smart billing and invoice management web app built for organizations and startups. It automates billing, tracks transactions, and keeps your accounts up to date with next-gen analytics and security."
+          )}
         </motion.p>
 
         <motion.p
@@ -36,13 +39,12 @@ function About() {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         >
-          Our platform is designed to simplify complex finance workflows so you
-          can focus on what really matters — growing your business with
-          confidence and clarity.
+          {t(
+            "Our platform is designed to simplify complex finance workflows so you can focus on what really matters — growing your business with confidence and clarity."
+          )}
         </motion.p>
       </motion.div>
 
-      
       <motion.div
         className="about-image"
         initial={{ opacity: 0, x: 120 }}
@@ -51,7 +53,7 @@ function About() {
       >
         <motion.img
           src={invoiceImage}
-          alt="Billing management"
+          alt={t("Billing management")}
           whileHover={{ scale: 1.05, rotate: 1 }}
           transition={{ duration: 0.4 }}
         />
@@ -65,16 +67,22 @@ function About() {
       >
         {[
           {
-            title: "Our Mission",
-            text: "To make billing simple, transparent, and automated for every business — big or small.",
+            title: t("Our Mission"),
+            text: t(
+              "To make billing simple, transparent, and automated for every business — big or small."
+            ),
           },
           {
-            title: "Our Vision",
-            text: "To be India’s most trusted billing and finance automation platform by empowering organizations digitally.",
+            title: t("Our Vision"),
+            text: t(
+              "To be India’s most trusted billing and finance automation platform by empowering organizations digitally."
+            ),
           },
           {
-            title: "Why Choose Us",
-            text: "Seamless UI, real-time analytics, and cloud security — all in one powerful billing ecosystem.",
+            title: t("Why Choose Us"),
+            text: t(
+              "Seamless UI, real-time analytics, and cloud security — all in one powerful billing ecosystem."
+            ),
           },
         ].map((card, i) => (
           <motion.div

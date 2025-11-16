@@ -1,50 +1,30 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import "./footer.css";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer">
-      <motion.div
-        className="footer-container"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        {/*  left section */}
+      <motion.div className="footer-container">
         <div className="footer-brand">
-          <h2>Mera Bill</h2>
-          <p>Smart Billing. Simple Management. Total Control.</p>
+          <h2>{t("Mera Bill")}</h2>
+          <p>{t("Smart Billing. Simple Management. Total Control.")}</p>
         </div>
 
-       
-
-        {/*  social media */}
         <div className="footer-socials">
-          <motion.a whileHover={{ scale: 1.2 }} href="#">
-            <FaFacebook />
-          </motion.a>
-          <motion.a whileHover={{ scale: 1.2 }} href="#">
-            <FaInstagram />
-          </motion.a>
-          <motion.a whileHover={{ scale: 1.2 }} href="#">
-            <FaTwitter />
-          </motion.a>
-          <motion.a whileHover={{ scale: 1.2 }} href="#">
-            <FaLinkedin />
-          </motion.a>
+          <a href="#"><FaFacebook /></a>
+          <a href="#"><FaInstagram /></a>
+          <a href="#"><FaTwitter /></a>
+          <a href="#"><FaLinkedin /></a>
         </div>
       </motion.div>
 
-      {/*  bottom strip */}
-      <motion.div
-        className="footer-bottom"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-      >
-        <p>© {new Date().getFullYear()} Mera Bill. All rights reserved.</p>
+      <motion.div className="footer-bottom">
+        <p>© {new Date().getFullYear()} {t("Mera Bill")}. {t("All rights reserved.")}</p>
       </motion.div>
     </footer>
   );

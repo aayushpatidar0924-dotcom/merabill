@@ -4,9 +4,11 @@ import cors from "cors";
 import multer from "multer";
 import dotenv from "dotenv";
 import path from "path";
+import contactRoutes from "./routes/contact.js";
 import { fileURLToPath } from "url";
 
-dotenv.config();
+dotenv.config({ path: path.resolve("./backend/.env") });
+
 const app = express();
 
 //  basic middlewares
@@ -80,6 +82,23 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ success: false, message: "Error in login" });
   }
 });
+// 🧩 Get all workers for a specific organization
+app.get("/workers/:organization", async (req, res) => {
+  try {
+    const { organization } = req.params;
+
+    // Organization ke naam se filter kar ke sirf worker role wale users la rahe hain
+    const workers = await User.find({ organization, role: "worker" });
+
+    res.json({ success: true, workers });
+  } catch (err) {
+    console.error("Error fetching workers:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
+app.use("/contact", contactRoutes);
 
 // start server
 const PORT = process.env.PORT || 5000;

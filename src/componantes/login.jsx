@@ -1,18 +1,30 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const [errorMessage, setErrorMessage] = useState("");   // NEW
+  const [inputError, setInputError] = useState(false);     // NEW
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    // Remove error when user types again
+    setInputError(false);
+    setErrorMessage("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+    setInputError(false);
 
     try {
       const res = await fetch("http://localhost:5000/login", {
@@ -22,22 +34,23 @@ function Login() {
       });
 
       const data = await res.json();
-      if (data.success) {
-        alert("✅ Login successful!");
-        console.log("User:", data.user);
 
-        // 🌟 Redirect based on role
+      if (data.success) {
+        // NO ALERT
         if (data.user.role === "manager" || data.user.role === "admin") {
           navigate("/admin");
+        } else if (data.user.role === "worker") {
+          navigate("/worker");
         } else {
           navigate("/");
         }
-
       } else {
-        alert("❌ " + data.message);
+        // WRONG EMAIL OR PASSWORD — SHOW ERROR MESSAGE
+        setErrorMessage("❌ Email or Password is incorrect");
+        setInputError(true);
       }
     } catch (err) {
-      alert("⚠️ Server connection error");
+      setErrorMessage("⚠️ Server connection error");
       console.error(err);
     }
   };
@@ -55,38 +68,48 @@ function Login() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        <h1>Welcome Back 👋</h1>
-        <p>Login to your MeraBill account</p>
+        <h1>{t("Welcome Back 👋")}</h1>
+        <p>{t("Login to your MeraBill account")}</p>
+
+        {/* ERROR MESSAGE ABOVE LOGIN BUTTON */}
+        {errorMessage && (
+          <p className="login-error-message">{errorMessage}</p>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit}>
           <motion.input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder={t("Email")}
             required
             onChange={handleChange}
+            className={inputError ? "input-error" : ""}
             whileFocus={{ scale: 1.03 }}
           />
+
           <motion.input
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder={t("Password")}
             required
             onChange={handleChange}
+            className={inputError ? "input-error" : ""}
             whileFocus={{ scale: 1.03 }}
           />
+
           <motion.button
             type="submit"
             className="login-btn"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Login 🚀
+            {t("Login")}
           </motion.button>
         </form>
 
         <p className="login-switch">
-          Don’t have an account? <Link to="/signup">Sign Up</Link>
+          {t("Don’t have an account?")}{" "}
+          <Link to="/signup">{t("Sign Up")}</Link>
         </p>
       </motion.div>
     </motion.div>

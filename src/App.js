@@ -10,25 +10,37 @@ import Contact from './componantes/contact';
 import Login from './componantes/login';
 import Signup from "./componantes/sign up";
 import Admin from "./componantes/admin";
+import Workers from "./componantes/workers";
+import Worker from "./componantes/Worker";
 
 function AppContent() {
   const location = useLocation();
 
-  // agar path /admin se start ho raha ho to Navbar aur Footer hide kar do
-  const hideNavbarFooter = location.pathname.startsWith("/admin");
+  // HIDE NAVBAR FOR ADMIN & WORKER
+  const hideNavbar =
+    location.pathname.startsWith("/admin") ||
+    location.pathname.startsWith("/worker");
 
   return (
     <>
-      {!hideNavbarFooter && <Navbar />}
+      {!hideNavbar && <Navbar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+        {/* ADMIN */}
         <Route path="/admin" element={<Admin />} />
+        <Route path="/workers" element={<Workers />} />
+
+        {/* WORKER */}
+        <Route path="/worker" element={<Worker />} />
       </Routes>
-      {!hideNavbarFooter && <Footer />}
+
+      <Footer />
     </>
   );
 }

@@ -141,3 +141,15 @@
     padding: 30px 20px;
   }
 }
+
+.success-text {
+  color: #2ecc71;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.error-text {
+  color: #e74c3c;
+  margin-top: 10px;
+  font-weight: 600;
+}

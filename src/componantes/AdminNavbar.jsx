@@ -1,18 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-// import "./admin_nav.css";
+import { useTranslation } from "react-i18next";
+import "./nav_bar.css";
 
-function AdminNavbar() {
+function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
-    <nav className="admin-navbar">
-      <h2>Admin Panel</h2>
-      <ul>
-        <li><Link to="/admin">Dashboard</Link></li>
-        <li><Link to="/users">Users</Link></li>
-        <li><Link to="/">Logout</Link></li>
+    <nav className="navbar">
+      <div className="logo">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/4762/4762314.png"
+          alt="Mera Bill Logo"
+        />
+        <h2>{t("Mera Bill")}</h2>
+        <h2>{t("Admin Panel")}</h2>
+      </div>
+
+      {/* Menu Icon for Mobile */}
+      <div className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <ul className={menuOpen ? "active" : ""}>
+        <li><Link to="/">{t("View Bills")}</Link></li>
+        <li><Link to="/">{t("Add Bills")}</Link></li>
+        <li><Link to="/workers">{t("Workers")}</Link></li>
+        <li><Link to="/">{t("Logout")}</Link></li>
+
+        {/*  Language Switcher */}
+        <li className="language-select">
+          <select
+            onChange={(e) => changeLanguage(e.target.value)}
+            defaultValue={i18n.language}
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+        </li>
       </ul>
     </nav>
   );
 }
 
-export default AdminNavbar;
+export default Navbar;
