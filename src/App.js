@@ -12,6 +12,9 @@ import Signup from "./componantes/sign up";
 import Admin from "./componantes/admin";
 import Workers from "./componantes/workers";
 import Worker from "./componantes/Worker";
+import Profile from "./componantes/profile";
+import Addbill from "./componantes/addbill";
+import Viewbill from "./componantes/viewbill";
 
 function AppContent() {
   const location = useLocation();
@@ -19,7 +22,10 @@ function AppContent() {
   // HIDE NAVBAR FOR ADMIN & WORKER
   const hideNavbar =
     location.pathname.startsWith("/admin") ||
-    location.pathname.startsWith("/worker");
+    location.pathname.startsWith("/worker") ||
+    location.pathname.startsWith("/addbill") ||
+    location.pathname.startsWith("/viewbill") ||
+    location.pathname.startsWith("/profile");
 
   return (
     <>
@@ -31,7 +37,9 @@ function AppContent() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/addbill" element={<Addbill />} />
+        <Route path="/viewbill" element={<Viewbill />} />
         {/* ADMIN */}
         <Route path="/admin" element={<Admin />} />
         <Route path="/workers" element={<Workers />} />

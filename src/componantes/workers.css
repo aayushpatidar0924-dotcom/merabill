@@ -1,41 +1,96 @@
+/* Background same as other pages */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+  background-size: 300% 300%;
+  animation: bgMove 10s ease infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* PAGE CONTAINER */
 .workers-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1e1f29, #282a36, #3a3d52);
-  color: white;
-  padding: 40px;
-  font-family: "Poppins", sans-serif;
-}
-
-.worker-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.worker-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-  width: 220px;
+  padding: 50px 20px;
   text-align: center;
-  transition: 0.3s;
+  color: white;
+}
+
+/* PAGE TITLE */
+.workers-page h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+/* ERROR TEXT */
+.error-text {
+  color: #f87171;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* WORKER LIST GRID */
+.worker-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+/* WORKER CARD */
+.worker-card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 20px;
+  color: white;
+  width: 100%;
+  max-width: 220px;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .worker-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 0 10px #00d4ff;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
+/* WORKER IMAGE */
 .worker-card img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.4);
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  margin-bottom: 15px;
 }
 
-.error-text {
-  color: #ff7eb3;
-  text-align: center;
-  margin-bottom: 20px;
+/* WORKER INFO */
+.worker-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.worker-card p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+  .worker-list {
+    grid-template-columns: 1fr;
+  }
+  .worker-card {
+    max-width: 90%;
+  }
 }

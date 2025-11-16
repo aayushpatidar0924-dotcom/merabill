@@ -118,7 +118,7 @@ function Signup() {
           />
 
           <button type="submit" className="signup-btn">
-            {t("Sign Up 🚀")}
+            {t("Sign Up ")}
           </button>
         </form>
       </motion.div>

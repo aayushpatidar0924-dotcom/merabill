@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AdminNavbar from "./AdminNavbar";
 import "./workers.css";
 
 function Workers({ organization }) {
@@ -26,6 +27,8 @@ function Workers({ organization }) {
   }, [organization]);
 
   return (
+    <>
+    <AdminNavbar />
     <div className="workers-page">
       <h1>👷 Workers of {organization}</h1>
 
@@ -52,7 +55,9 @@ function Workers({ organization }) {
           !error && <p>No workers found.</p>
         )}
       </div>
+      
     </div>
+    </>
   );
 }
 

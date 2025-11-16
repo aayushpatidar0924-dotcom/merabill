@@ -8,15 +8,15 @@ function Login() {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const [errorMessage, setErrorMessage] = useState("");   // NEW
-  const [inputError, setInputError] = useState(false);     // NEW
+  const [errorMessage, setErrorMessage] = useState("");
+  const [inputError, setInputError] = useState(false);
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    // Remove error when user types again
+    // Remove error on typing
     setInputError(false);
     setErrorMessage("");
   };
@@ -36,7 +36,10 @@ function Login() {
       const data = await res.json();
 
       if (data.success) {
-        // NO ALERT
+        // ⬅ USER DATA SAVE IN LOCAL STORAGE
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // Role based navigation
         if (data.user.role === "manager" || data.user.role === "admin") {
           navigate("/admin");
         } else if (data.user.role === "worker") {
@@ -45,7 +48,6 @@ function Login() {
           navigate("/");
         }
       } else {
-        // WRONG EMAIL OR PASSWORD — SHOW ERROR MESSAGE
         setErrorMessage("❌ Email or Password is incorrect");
         setInputError(true);
       }
@@ -71,7 +73,7 @@ function Login() {
         <h1>{t("Welcome Back 👋")}</h1>
         <p>{t("Login to your MeraBill account")}</p>
 
-        {/* ERROR MESSAGE ABOVE LOGIN BUTTON */}
+        {/* ❌ ERROR MESSAGE */}
         {errorMessage && (
           <p className="login-error-message">{errorMessage}</p>
         )}

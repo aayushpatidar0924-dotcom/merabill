@@ -1,0 +1,120 @@
+/* SAME BACKGROUND AS PROFILE */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+  background-size: 300% 300%;
+  animation: bgMove 10s ease infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* WRAPPER */
+.add-bill-container {
+  display: flex;
+  justify-content: center;
+  padding: 50px 20px;
+}
+
+/* CARD GLASS STYLE */
+.add-bill-card {
+  width: 100%;
+  max-width: 550px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 40px 30px;
+  border-radius: 20px;
+  color: white;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* TITLE */
+.add-bill-card h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* IMAGE PREVIEW */
+.bill-image-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.bill-preview {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 15px;
+  border: 3px solid rgba(255,255,255,0.4);
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+
+.bill-image-section input {
+  margin-top: 12px;
+  color: white;
+}
+
+/* LABELS */
+.add-bill-card label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* INPUTS & SELECT */
+.add-bill-card input,
+.add-bill-card select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.18);
+  color: white;
+  font-size: 1rem;
+}
+
+/* Input focus effect */
+.add-bill-card input:focus,
+.add-bill-card select:focus {
+  background: rgba(255,255,255,0.30);
+  box-shadow: 0 0 10px rgba(59,130,246,0.6);
+}
+
+/* FIX WHITE TEXT IN SELECT DROPDOWN */
+.add-bill-card select option {
+  color: black;
+  background: #f1f5f9;
+}
+
+/* UPLOAD BUTTON */
+.upload-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #3b82f6, #2563eb, #1d4ed8);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(96,165,250,0.7);
+}
