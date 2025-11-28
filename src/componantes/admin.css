@@ -1,0 +1,227 @@
+/* Admin Dashboard — Neo Glassmorphism Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root{
+  --glass-bg: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --accent: #60a5fa;
+  --accent-2: #7c3aed;
+  --muted: #cbd5e1;
+}
+
+/* page base */
+.admin-dashboard {
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  padding: 28px;
+  max-width: 1180px;
+  margin: 0 auto 80px;
+}
+
+/* glass base */
+.glass {
+  background: var(--glass-bg);
+  border-radius: 16px;
+  padding: 18px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.5);
+  backdrop-filter: blur(10px) saturate(120%);
+}
+
+/* top row */
+.admin-top {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+/* profile box */
+.admin-profile {
+  display: flex;
+  gap: 18px;
+  padding: 22px;
+  align-items: center;
+  transition: transform .25s ease;
+}
+.admin-profile:hover { transform: translateY(-6px); }
+
+/* avatar */
+.profile-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.12);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+/* profile text */
+.admin-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.admin-org {
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* profile stats small */
+.profile-stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stat.mini {
+  min-width: 86px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: linear-gradient(90deg,var(--accent),var(--accent-2));
+  /* use accent color */
+  color: #a5f3fc;
+}
+
+/* chart card */
+.chart-card {
+  padding: 20px;
+}
+
+.chart-card h3 {
+  margin-top: 2px;
+  margin-bottom: 12px;
+  color: #e6eefc;
+}
+
+/* svg bars */
+.chart-area {
+  width: 100%;
+  height: 160px;
+}
+
+.bars-svg {
+  width: 100%;
+  height: 160px;
+}
+
+.bar-rect {
+  fill: linear-gradient(90deg,var(--accent),var(--accent-2));
+  fill: url(#grad1); /* fallback */
+  transform-origin: center bottom;
+  animation: barGrow 800ms ease forwards;
+  opacity: 0.95;
+}
+
+/* animate bars */
+@keyframes barGrow {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 0.95; }
+}
+
+/* small labels for bars */
+.bar-label {
+  font-size: 11px;
+  fill: #cbd5e1;
+}
+.bar-value {
+  font-size: 11px;
+  fill: #dbeafe;
+}
+
+/* middle area */
+.admin-mid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+}
+
+/* type panel */
+.types-panel .types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.type-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.type-name { color: #e6eefc; font-weight: 600; }
+.type-count { color: #93c5fd; font-weight: 700; }
+
+/* recent panel */
+.recent-panel .recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.recent-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+}
+.recent-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.06);
+}
+.recent-title { font-weight: 700; color: #fff; }
+.recent-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+/* general small utilities */
+.admin-loading, .admin-page-empty {
+  color: white;
+  padding: 60px;
+  text-align: center;
+}
+
+/* responsive */
+@media (max-width: 980px) {
+  .admin-top { grid-template-columns: 1fr; }
+  .admin-mid { grid-template-columns: 1fr; }
+  .admin-dashboard { padding: 18px; }
+}
+
+/* subtle page background glow */
+.admin-dashboard::before {
+  content: "";
+  position: fixed;
+  left: -120px;
+  top: -120px;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.12), transparent 30%);
+  filter: blur(60px);
+  z-index: 0;
+}

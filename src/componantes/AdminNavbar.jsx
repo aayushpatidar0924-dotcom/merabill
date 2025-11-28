@@ -30,6 +30,7 @@ function Navbar() {
       </div>
 
       <ul className={menuOpen ? "active" : ""}>
+        <li><Link to="/admin">{t("Home")}</Link></li>
         <li><Link to="/viewbill">{t("View Bills")}</Link></li>
         <li><Link to="/addbill">{t("Add Bills")}</Link></li>
         <li><Link to="/workers">{t("Workers")}</Link></li>

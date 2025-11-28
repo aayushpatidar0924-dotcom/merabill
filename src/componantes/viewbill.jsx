@@ -18,45 +18,72 @@ function ViewBill() {
     billNumber: ""
   });
 
-  // Fetch bills
+  /* ---------------------------
+        FETCH BILLS 
+  --------------------------- */
   const fetchBills = () => {
     if (!savedUser) return;
     setLoading(true);
-    axios.get(`http://localhost:5000/bills/${savedUser._id}`)
-      .then(res => {
+
+    // ADMIN → Get all bills of organization
+    if (role === "manager") {
+      axios
+        .get(`http://localhost:5000/bills/org/${savedUser.organization}`)
+        .then((res) => {
+          if (res.data.success) setBills(res.data.bills);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log("Error fetching org bills:", err);
+          setLoading(false);
+        });
+      return;
+    }
+
+    // WORKER → Get only own bills
+    axios
+      .get(`http://localhost:5000/bills/${savedUser._id}`)
+      .then((res) => {
         if (res.data.success) setBills(res.data.bills);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("Error fetching bills:", err);
         setLoading(false);
       });
-  }
+  };
 
-  useEffect(() => { fetchBills(); }, []);
+  useEffect(() => {
+    fetchBills();
+  }, []);
 
-  // Delete bill
+  /* ---------------------------
+        DELETE BILL
+  --------------------------- */
   const handleDelete = (billId) => {
     if (!window.confirm("Are you sure you want to delete this bill?")) return;
 
-    axios.delete(`http://localhost:5000/bill/${billId}`)
-      .then(res => {
+    axios
+      .delete(`http://localhost:5000/bill/${billId}`)
+      .then((res) => {
         if (res.data.success) {
           alert("Bill deleted successfully!");
           fetchBills();
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
-  // Edit bill
+  /* ---------------------------
+        EDIT BILL
+  --------------------------- */
   const startEdit = (bill) => {
     setEditingBillId(bill._id);
     setEditData({
       type: bill.type,
       date: bill.date,
       amount: bill.amount,
-      billNumber: bill.billNumber
+      billNumber: bill.billNumber,
     });
   };
 
@@ -65,18 +92,24 @@ function ViewBill() {
   };
 
   const saveEdit = (billId) => {
-    axios.put(`http://localhost:5000/bill/${billId}`, editData)
-      .then(res => {
+    axios
+      .put(`http://localhost:5000/bill/${billId}`, editData)
+      .then((res) => {
         if (res.data.success) {
           alert("Bill updated successfully!");
           setEditingBillId(null);
           fetchBills();
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
-  if (loading) return <h2 style={{ color: "white", textAlign: "center" }}>Loading bills...</h2>;
+  if (loading)
+    return (
+      <h2 style={{ color: "white", textAlign: "center" }}>
+        Loading bills...
+      </h2>
+    );
 
   return (
     <>
@@ -85,38 +118,97 @@ function ViewBill() {
 
       <div className="view-bill-container">
         {bills.length === 0 ? (
-          <h3 style={{ color: "white", textAlign: "center" }}>No bills uploaded yet.</h3>
-        ) : bills.map(bill => (
-          <div key={bill._id} className="bill-card">
-            <div className="bill-image-section">
-              <img
-                src={`http://localhost:5000/uploads/${bill.billImage}`}
-                alt="Bill"
-                className="bill-image"
-              />
-            </div>
+          <h3 style={{ color: "white", textAlign: "center" }}>
+            No bills uploaded yet.
+          </h3>
+        ) : (
+          bills.map((bill) => (
+            <div key={bill._id} className="bill-card">
+              <div className="bill-image-section">
+                <img
+                  src={`http://localhost:5000/uploads/${bill.billImage}`}
+                  alt="Bill"
+                  className="bill-image"
+                />
+              </div>
 
-            {editingBillId === bill._id ? (
-              <div className="bill-details">
-                <input name="type" value={editData.type} onChange={handleEditChange} />
-                <input type="date" name="date" value={editData.date} onChange={handleEditChange} />
-                <input type="number" name="amount" value={editData.amount} onChange={handleEditChange} />
-                <input name="billNumber" value={editData.billNumber} onChange={handleEditChange} />
-                <button onClick={() => saveEdit(bill._id)} className="save-btn">Save</button>
-                <button onClick={() => setEditingBillId(null)} className="cancel-btn">Cancel</button>
-              </div>
-            ) : (
-              <div className="bill-details">
-                <p><strong>Type:</strong> {bill.type}</p>
-                <p><strong>Date:</strong> {bill.date}</p>
-                <p><strong>Amount:</strong> ₹{bill.amount}</p>
-                <p><strong>Bill Number:</strong> {bill.billNumber}</p>
-                <button onClick={() => startEdit(bill)} className="edit-btn">Edit</button>
-                <button onClick={() => handleDelete(bill._id)} className="delete-btn">Delete</button>
-              </div>
-            )}
-          </div>
-        ))}
+              {/* Admin sees worker name */}
+              {role === "manager" && bill.userId && (
+                <p className="worker-info">
+                  <strong>Worker:</strong> {bill.userId.name}
+                </p>
+              )}
+
+              {editingBillId === bill._id ? (
+                <div className="bill-details">
+                  <input
+                    name="type"
+                    value={editData.type}
+                    onChange={handleEditChange}
+                  />
+                  <input
+                    type="date"
+                    name="date"
+                    value={editData.date}
+                    onChange={handleEditChange}
+                  />
+                  <input
+                    type="number"
+                    name="amount"
+                    value={editData.amount}
+                    onChange={handleEditChange}
+                  />
+                  <input
+                    name="billNumber"
+                    value={editData.billNumber}
+                    onChange={handleEditChange}
+                  />
+
+                  <button
+                    onClick={() => saveEdit(bill._id)}
+                    className="save-btn"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingBillId(null)}
+                    className="cancel-btn"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="bill-details">
+                  <p>
+                    <strong>Type:</strong> {bill.type}
+                  </p>
+                  <p>
+                    <strong>Date:</strong> {bill.date}
+                  </p>
+                  <p>
+                    <strong>Amount:</strong> ₹{bill.amount}
+                  </p>
+                  <p>
+                    <strong>Bill No:</strong> {bill.billNumber}
+                  </p>
+
+                  <button
+                    onClick={() => startEdit(bill)}
+                    className="edit-btn"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(bill._id)}
+                    className="delete-btn"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </>
   );
