@@ -215,12 +215,13 @@ export default function Admin() {
                   <div className="recent-right">
                     <div className="recent-title">{b.type}</div>
                     <div className="recent-meta">
-                      <span>{(b.userId && b.userId.name) || "—"}</span>
-                      <span>•</span>
-                      <span>{new Date(b.date || b.createdAt).toLocaleDateString()}</span>
-                      <span>•</span>
-                      <span>₹{b.amount ?? "-"}</span>
-                    </div>
+  <span>{b.userId?.name || "—"}</span>
+  <span>•</span>
+  <span>{new Date(b.date).toLocaleDateString()}</span>
+  <span>•</span>
+  <span>₹{b.amount}</span>
+</div>
+
                   </div>
                 </div>
               ))}

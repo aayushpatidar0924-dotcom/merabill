@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import AdminNavbar from "./AdminNavbar";
 import WorkerNavbar from "./WorkerNavbar";
 import "./viewbill.css";
 
 function ViewBill() {
-  const savedUser = JSON.parse(localStorage.getItem("user"));
-  const role = savedUser?.role?.toLowerCase();
+  // savedUser ko useMemo me wrap
+  const savedUser = useMemo(() => {
+    return JSON.parse(localStorage.getItem("user")) || {};
+  }, []);
+
+  const role = savedUser?.role?.toLowerCase() || "";
 
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,47 +19,41 @@ function ViewBill() {
     type: "",
     date: "",
     amount: "",
-    billNumber: ""
+    billNumber: "",
   });
 
   /* ---------------------------
-        FETCH BILLS 
+        FETCH BILLS
   --------------------------- */
-  const fetchBills = () => {
-    if (!savedUser) return;
-    setLoading(true);
-
-    // ADMIN → Get all bills of organization
-    if (role === "manager") {
-      axios
-        .get(`http://localhost:5000/bills/org/${savedUser.organization}`)
-        .then((res) => {
-          if (res.data.success) setBills(res.data.bills);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log("Error fetching org bills:", err);
-          setLoading(false);
-        });
+  const fetchBills = useCallback(() => {
+    if (!savedUser || !savedUser._id) {
+      setLoading(false);
       return;
     }
+    setLoading(true);
 
-    // WORKER → Get only own bills
+    const url =
+      role === "manager"
+        ? `http://localhost:5000/bills/org/${savedUser.organization}`
+        : `http://localhost:5000/bills/${savedUser._id}`;
+
     axios
-      .get(`http://localhost:5000/bills/${savedUser._id}`)
+      .get(url)
       .then((res) => {
         if (res.data.success) setBills(res.data.bills);
+        else setBills([]);
         setLoading(false);
       })
       .catch((err) => {
         console.log("Error fetching bills:", err);
+        setBills([]);
         setLoading(false);
       });
-  };
+  }, [savedUser, role]);
 
   useEffect(() => {
     fetchBills();
-  }, []);
+  }, [fetchBills]);
 
   /* ---------------------------
         DELETE BILL
@@ -80,10 +78,10 @@ function ViewBill() {
   const startEdit = (bill) => {
     setEditingBillId(bill._id);
     setEditData({
-      type: bill.type,
-      date: bill.date,
-      amount: bill.amount,
-      billNumber: bill.billNumber,
+      type: bill.type || "",
+      date: bill.date ? bill.date.slice(0, 10) : "",
+      amount: bill.amount || "",
+      billNumber: bill.billNumber || "",
     });
   };
 
@@ -104,6 +102,20 @@ function ViewBill() {
       .catch((err) => console.log(err));
   };
 
+  /* ---------------------------
+        FORMAT DATE
+  --------------------------- */
+  const formatDate = (date) => {
+    if (!date) return "No Date";
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "No Date";
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   if (loading)
     return (
       <h2 style={{ color: "white", textAlign: "center" }}>
@@ -113,8 +125,7 @@ function ViewBill() {
 
   return (
     <>
-      {role === "manager" && <AdminNavbar />}
-      {role === "worker" && <WorkerNavbar />}
+      {role === "manager" ? <AdminNavbar /> : <WorkerNavbar />}
 
       <div className="view-bill-container">
         {bills.length === 0 ? (
@@ -132,10 +143,9 @@ function ViewBill() {
                 />
               </div>
 
-              {/* Admin sees worker name */}
               {role === "manager" && bill.userId && (
                 <p className="worker-info">
-                  <strong>Worker:</strong> {bill.userId.name}
+                  <strong>Uploaded By:</strong> {bill.userId.name}
                 </p>
               )}
 
@@ -164,10 +174,7 @@ function ViewBill() {
                     onChange={handleEditChange}
                   />
 
-                  <button
-                    onClick={() => saveEdit(bill._id)}
-                    className="save-btn"
-                  >
+                  <button onClick={() => saveEdit(bill._id)} className="save-btn">
                     Save
                   </button>
                   <button
@@ -180,22 +187,21 @@ function ViewBill() {
               ) : (
                 <div className="bill-details">
                   <p>
-                    <strong>Type:</strong> {bill.type}
+                    <strong>Type:</strong> {bill.type || "N/A"}
                   </p>
                   <p>
-                    <strong>Date:</strong> {bill.date}
+                    <strong>Date:</strong> {formatDate(bill.date)}
                   </p>
                   <p>
-                    <strong>Amount:</strong> ₹{bill.amount}
+                    <strong>Amount:</strong> ₹{bill.amount || 0}
                   </p>
                   <p>
-                    <strong>Bill No:</strong> {bill.billNumber}
+                    <strong>Bill No:</strong> {bill.billNumber || "N/A"}
                   </p>
 
-                  <button
-                    onClick={() => startEdit(bill)}
-                    className="edit-btn"
-                  >
+                  
+
+                  <button onClick={() => startEdit(bill)} className="edit-btn">
                     Edit
                   </button>
                   <button
