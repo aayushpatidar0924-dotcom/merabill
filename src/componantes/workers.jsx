@@ -2,18 +2,27 @@ import React, { useEffect, useState } from "react";
 import AdminNavbar from "./AdminNavbar";
 import "./workers.css";
 
-function Workers({ organization }) {
+function Workers() {
   const [workers, setWorkers] = useState([]);
   const [error, setError] = useState("");
 
+  // ✅ Get organization from localStorage
+  const savedUser = JSON.parse(localStorage.getItem("user"));
+  const organization = savedUser?.organization;
+
   useEffect(() => {
+    console.log("ORG RECEIVED:", organization);
+
     const fetchWorkers = async () => {
       try {
         const res = await fetch(`http://localhost:5000/workers/${organization}`);
         const data = await res.json();
 
-        if (data.success) setWorkers(data.workers);
-        else setError("Failed to load workers");
+        if (data.success) {
+          setWorkers(data.workers);
+        } else {
+          setError("Failed to load workers");
+        }
       } catch (err) {
         console.error(err);
         setError("Server connection error");
@@ -26,8 +35,10 @@ function Workers({ organization }) {
   return (
     <>
       <AdminNavbar />
+      
       <div className="workers-page">
         <h1>👷 Workers of {organization}</h1>
+
         {error && <p className="error-text">{error}</p>}
 
         <div className="worker-list">

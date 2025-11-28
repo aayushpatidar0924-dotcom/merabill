@@ -41,15 +41,22 @@ function AddBill() {
 
     const formData = new FormData();
     formData.append("billImage", billImage);
-    formData.append("billType", billData.billType);
-    formData.append("billDate", billData.billDate);
-    formData.append("billAmount", billData.billAmount);
+
+    // *** VERY IMPORTANT FIELD NAME FIX ***
+    formData.append("type", billData.billType);
+    formData.append("date", billData.billDate);
+    formData.append("amount", billData.billAmount);
     formData.append("billNumber", billData.billNumber);
     formData.append("userId", savedUser._id);
 
     try {
-      const res = await axios.post("http://localhost:5000/add-bill", formData);
-
+      const res = await axios.post(
+        "http://localhost:5000/add-bill",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       if (res.data.success) {
         alert("Bill uploaded successfully!");
