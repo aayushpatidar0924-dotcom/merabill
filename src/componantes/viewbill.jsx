@@ -2,10 +2,12 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import AdminNavbar from "./AdminNavbar";
 import WorkerNavbar from "./WorkerNavbar";
+import { useTranslation } from "react-i18next";
 import "./viewbill.css";
 
 function ViewBill() {
-  // savedUser ko useMemo me wrap
+  const { t } = useTranslation();
+
   const savedUser = useMemo(() => {
     return JSON.parse(localStorage.getItem("user")) || {};
   }, []);
@@ -22,9 +24,6 @@ function ViewBill() {
     billNumber: "",
   });
 
-  /* ---------------------------
-        FETCH BILLS
-  --------------------------- */
   const fetchBills = useCallback(() => {
     if (!savedUser || !savedUser._id) {
       setLoading(false);
@@ -55,26 +54,20 @@ function ViewBill() {
     fetchBills();
   }, [fetchBills]);
 
-  /* ---------------------------
-        DELETE BILL
-  --------------------------- */
   const handleDelete = (billId) => {
-    if (!window.confirm("Are you sure you want to delete this bill?")) return;
+    if (!window.confirm(t("Are you sure you want to delete this bill?"))) return;
 
     axios
       .delete(`http://localhost:5000/bill/${billId}`)
       .then((res) => {
         if (res.data.success) {
-          alert("Bill deleted successfully!");
+          alert(t("Bill deleted successfully!"));
           fetchBills();
         }
       })
       .catch((err) => console.log(err));
   };
 
-  /* ---------------------------
-        EDIT BILL
-  --------------------------- */
   const startEdit = (bill) => {
     setEditingBillId(bill._id);
     setEditData({
@@ -94,7 +87,7 @@ function ViewBill() {
       .put(`http://localhost:5000/bill/${billId}`, editData)
       .then((res) => {
         if (res.data.success) {
-          alert("Bill updated successfully!");
+          alert(t("Bill updated successfully!"));
           setEditingBillId(null);
           fetchBills();
         }
@@ -102,13 +95,10 @@ function ViewBill() {
       .catch((err) => console.log(err));
   };
 
-  /* ---------------------------
-        FORMAT DATE
-  --------------------------- */
   const formatDate = (date) => {
-    if (!date) return "No Date";
+    if (!date) return t("No Date");
     const d = new Date(date);
-    if (isNaN(d.getTime())) return "No Date";
+    if (isNaN(d.getTime())) return t("No Date");
     return d.toLocaleDateString("en-IN", {
       day: "2-digit",
       month: "short",
@@ -119,7 +109,7 @@ function ViewBill() {
   if (loading)
     return (
       <h2 style={{ color: "white", textAlign: "center" }}>
-        Loading bills...
+        {t("Loading bills...")}
       </h2>
     );
 
@@ -130,7 +120,7 @@ function ViewBill() {
       <div className="view-bill-container">
         {bills.length === 0 ? (
           <h3 style={{ color: "white", textAlign: "center" }}>
-            No bills uploaded yet.
+            {t("No bills uploaded yet.")}
           </h3>
         ) : (
           bills.map((bill) => (
@@ -138,36 +128,43 @@ function ViewBill() {
               <div className="bill-image-section">
                 <img
                   src={`http://localhost:5000/uploads/${bill.billImage}`}
-                  alt="Bill"
+                  alt={t("Bill")}
                   className="bill-image"
                 />
               </div>
 
               {role === "manager" && bill.userId && (
                 <p className="worker-info">
-                  <strong>Uploaded By:</strong> {bill.userId.name}
+                  <strong>{t("Uploaded By:")}</strong> {bill.userId.name}
                 </p>
               )}
 
               {editingBillId === bill._id ? (
                 <div className="bill-details">
+                  <p><strong>{t("Type")}:</strong></p>
                   <input
                     name="type"
                     value={editData.type}
                     onChange={handleEditChange}
                   />
+
+                  <p><strong>{t("Date")}:</strong></p>
                   <input
                     type="date"
                     name="date"
                     value={editData.date}
                     onChange={handleEditChange}
                   />
+
+                  <p><strong>{t("Amount")}:</strong></p>
                   <input
                     type="number"
                     name="amount"
                     value={editData.amount}
                     onChange={handleEditChange}
                   />
+
+                  <p><strong>{t("Bill No")}:</strong></p>
                   <input
                     name="billNumber"
                     value={editData.billNumber}
@@ -175,40 +172,38 @@ function ViewBill() {
                   />
 
                   <button onClick={() => saveEdit(bill._id)} className="save-btn">
-                    Save
+                    {t("Save")}
                   </button>
                   <button
                     onClick={() => setEditingBillId(null)}
                     className="cancel-btn"
                   >
-                    Cancel
+                    {t("Cancel")}
                   </button>
                 </div>
               ) : (
                 <div className="bill-details">
                   <p>
-                    <strong>Type:</strong> {bill.type || "N/A"}
+                    <strong>{t("Type")}:</strong> {bill.type || t("N/A")}
                   </p>
                   <p>
-                    <strong>Date:</strong> {formatDate(bill.date)}
+                    <strong>{t("Date")}:</strong> {formatDate(bill.date)}
                   </p>
                   <p>
-                    <strong>Amount:</strong> ₹{bill.amount || 0}
+                    <strong>{t("Amount")}:</strong> ₹{bill.amount || 0}
                   </p>
                   <p>
-                    <strong>Bill No:</strong> {bill.billNumber || "N/A"}
+                    <strong>{t("Bill No")}:</strong> {bill.billNumber || t("N/A")}
                   </p>
-
-                  
 
                   <button onClick={() => startEdit(bill)} className="edit-btn">
-                    Edit
+                    {t("Edit")}
                   </button>
                   <button
                     onClick={() => handleDelete(bill._id)}
                     className="delete-btn"
                   >
-                    Delete
+                    {t("Delete")}
                   </button>
                 </div>
               )}

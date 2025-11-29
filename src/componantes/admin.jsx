@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import AdminNavbar from "./AdminNavbar";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import "./admin.css";
 
 function getMonthKey(date) {
@@ -20,6 +21,8 @@ function lastNMonthsKeys(n = 6) {
 }
 
 export default function Admin() {
+  const { t } = useTranslation();
+
   const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const adminId = savedUser?._id;
   const organization = savedUser?.organization;
@@ -52,19 +55,24 @@ export default function Admin() {
       })
       .catch((err) => {
         console.error("Admin fetch error:", err);
-        setError("Failed to load dashboard data. Check backend.");
+        setError(t("Failed to load dashboard data. Check backend."));
       })
       .finally(() => setLoading(false));
-  }, [adminId, organization]);
+  }, [adminId, organization, t]);
 
   // derived stats
   const workersCount = workersList.length;
   const adminBillsCount = adminBills.length;
   const orgBillsCount = orgBills.length;
 
-  // last 5 bills (most recent first) - using createdAt if available
+  // last 5 bills (most recent first)
   const last5 = useMemo(() => {
-    const all = orgBills.slice().sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+    const all = orgBills
+      .slice()
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
+      );
     return all.slice(0, 5);
   }, [orgBills]);
 
@@ -79,9 +87,12 @@ export default function Admin() {
   }, [orgBills]);
 
   // monthly distribution for last 6 months
-  const months = lastNMonthsKeys(6); // ["2025-06", ...]
+  const months = lastNMonthsKeys(6);
   const monthlyCounts = useMemo(() => {
-    const counts = months.reduce((acc, k) => { acc[k] = 0; return acc; }, {});
+    const counts = months.reduce((acc, k) => {
+      acc[k] = 0;
+      return acc;
+    }, {});
     orgBills.forEach((b) => {
       const key = getMonthKey(b.date || b.createdAt || new Date());
       if (counts[key] !== undefined) counts[key]++;
@@ -94,7 +105,7 @@ export default function Admin() {
       <>
         <AdminNavbar />
         <div className="admin-page-empty">
-          <h3>Please login as admin and try again.</h3>
+          <h3>{t("Please login as admin and try again.")}</h3>
         </div>
       </>
     );
@@ -104,7 +115,7 @@ export default function Admin() {
     return (
       <>
         <AdminNavbar />
-        <div className="admin-loading">Loading dashboard...</div>
+        <div className="admin-loading">{t("Loading dashboard...")}</div>
       </>
     );
   }
@@ -129,20 +140,20 @@ export default function Admin() {
             </div>
 
             <div className="profile-right">
-              <h2 className="admin-name">{admin?.name || "Manager"}</h2>
+              <h2 className="admin-name">{admin?.name || t("Manager")}</h2>
               <p className="admin-org">{admin?.organization || organization}</p>
 
               <div className="profile-stats">
                 <div className="stat mini glass">
-                  <div className="stat-label">Your Bills</div>
+                  <div className="stat-label">{t("Your Bills")}</div>
                   <div className="stat-value">{adminBillsCount}</div>
                 </div>
                 <div className="stat mini glass">
-                  <div className="stat-label">Workers</div>
+                  <div className="stat-label">{t("Workers")}</div>
                   <div className="stat-value">{workersCount}</div>
                 </div>
                 <div className="stat mini glass">
-                  <div className="stat-label">Org Bills</div>
+                  <div className="stat-label">{t("Org Bills")}</div>
                   <div className="stat-value">{orgBillsCount}</div>
                 </div>
               </div>
@@ -150,11 +161,15 @@ export default function Admin() {
           </div>
 
           <div className="chart-card glass">
-            <h3>Bills in last 6 months</h3>
+            <h3>{t("Bills in last 6 months")}</h3>
             <div className="chart-area">
-              <svg viewBox="0 0 600 160" className="bars-svg" preserveAspectRatio="none">
+              <svg
+                viewBox="0 0 600 160"
+                className="bars-svg"
+                preserveAspectRatio="none"
+              >
                 {(() => {
-                  const max = Math.max(1, ...monthlyCounts.map(m => m.count));
+                  const max = Math.max(1, ...monthlyCounts.map((m) => m.count));
                   const barW = 600 / monthlyCounts.length;
                   return monthlyCounts.map((m, i) => {
                     const h = (m.count / max) * 120;
@@ -170,10 +185,20 @@ export default function Admin() {
                           height={h}
                           className="bar-rect"
                         />
-                        <text x={x + (barW - 20) / 2} y={155} textAnchor="middle" className="bar-label">
+                        <text
+                          x={x + (barW - 20) / 2}
+                          y={155}
+                          textAnchor="middle"
+                          className="bar-label"
+                        >
                           {m.month.split("-")[1]}/{m.month.split("-")[0].slice(2)}
                         </text>
-                        <text x={x + (barW - 20) / 2} y={y - 6} textAnchor="middle" className="bar-value">
+                        <text
+                          x={x + (barW - 20) / 2}
+                          y={y - 6}
+                          textAnchor="middle"
+                          className="bar-value"
+                        >
                           {m.count}
                         </text>
                       </g>
@@ -187,9 +212,9 @@ export default function Admin() {
 
         <div className="admin-mid">
           <div className="glass panel types-panel">
-            <h3>Bill Types</h3>
+            <h3>{t("Bill Types")}</h3>
             <div className="types-list">
-              {Object.keys(billTypeCounts).length === 0 && <p>No bills yet</p>}
+              {Object.keys(billTypeCounts).length === 0 && <p>{t("No bills yet")}</p>}
               {Object.entries(billTypeCounts).map(([type, cnt]) => (
                 <div className="type-row" key={type}>
                   <div className="type-name">{type}</div>
@@ -200,8 +225,8 @@ export default function Admin() {
           </div>
 
           <div className="glass panel recent-panel">
-            <h3>Recent Bills</h3>
-            {!last5.length && <p>No recent bills</p>}
+            <h3>{t("Recent Bills")}</h3>
+            {!last5.length && <p>{t("No recent bills")}</p>}
             <div className="recent-list">
               {last5.map((b) => (
                 <div className="recent-item" key={b._id}>
@@ -215,13 +240,12 @@ export default function Admin() {
                   <div className="recent-right">
                     <div className="recent-title">{b.type}</div>
                     <div className="recent-meta">
-  <span>{b.userId?.name || "—"}</span>
-  <span>•</span>
-  <span>{new Date(b.date).toLocaleDateString()}</span>
-  <span>•</span>
-  <span>₹{b.amount}</span>
-</div>
-
+                      <span>{b.userId?.name || "—"}</span>
+                      <span>•</span>
+                      <span>{new Date(b.date).toLocaleDateString()}</span>
+                      <span>•</span>
+                      <span>₹{b.amount}</span>
+                    </div>
                   </div>
                 </div>
               ))}

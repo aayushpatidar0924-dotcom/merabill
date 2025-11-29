@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useMemo } from "react";
 import WorkerNavbar from "./WorkerNavbar";
 import axios from "axios";
-import "./admin.css"; // SAME DESIGN USE HO RHA HAI
+import { useTranslation } from "react-i18next";
+import "./admin.css";
 
-// Get YYYY-MM
 function getMonthKey(date) {
   const d = new Date(date);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-// Last N months keys
 function lastNMonthsKeys(n = 6) {
   const arr = [];
   const now = new Date();
@@ -21,6 +20,8 @@ function lastNMonthsKeys(n = 6) {
 }
 
 export default function WorkerDashboard() {
+  const { t } = useTranslation();
+
   const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const workerId = savedUser?._id;
 
@@ -47,7 +48,6 @@ export default function WorkerDashboard() {
 
   const months = lastNMonthsKeys(6);
 
-  // Monthly chart
   const monthlyCounts = useMemo(() => {
     const base = months.reduce((acc, m) => {
       acc[m] = 0;
@@ -62,7 +62,6 @@ export default function WorkerDashboard() {
     return months.map((m) => ({ month: m, count: base[m] }));
   }, [workerBills, months]);
 
-  // Last 5 bills
   const last5 = useMemo(() => {
     const sorted = workerBills
       .slice()
@@ -76,7 +75,7 @@ export default function WorkerDashboard() {
       <>
         <WorkerNavbar />
         <h3 style={{ color: "white", textAlign: "center", marginTop: "50px" }}>
-          Please login as worker.
+          {t("Please login as worker.")}
         </h3>
       </>
     );
@@ -85,7 +84,7 @@ export default function WorkerDashboard() {
     return (
       <>
         <WorkerNavbar />
-        <div className="admin-loading">Loading dashboard...</div>
+        <div className="admin-loading">{t("Loading dashboard...")}</div>
       </>
     );
 
@@ -94,7 +93,7 @@ export default function WorkerDashboard() {
       <WorkerNavbar />
 
       <div className="admin-dashboard">
-        {/* ---------- TOP SECTION (Same as Admin) ---------- */}
+        {/* ---------- PROFILE & CHART ---------- */}
         <div className="admin-top">
           {/* Profile Box */}
           <div className="admin-profile glass">
@@ -111,21 +110,22 @@ export default function WorkerDashboard() {
             </div>
 
             <div className="profile-right">
-              <h2 className="admin-name">{worker?.name || "Worker"}</h2>
+              <h2 className="admin-name">{worker?.name || t("Worker")}</h2>
               <p className="admin-org">{worker?.organization}</p>
 
               <div className="profile-stats">
                 <div className="stat mini glass">
-                  <div className="stat-label">Your Bills</div>
+                  <div className="stat-label">{t("Your Bills")}</div>
                   <div className="stat-value">{workerBills.length}</div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Activity Chart */}
+          {/* ACTIVITY CHART */}
           <div className="chart-card glass">
-            <h3>Your Activity (Last 6 Months)</h3>
+            <h3>{t("Your Activity (Last 6 Months)")}</h3>
+
             <div className="chart-area">
               <svg viewBox="0 0 600 160" className="bars-svg" preserveAspectRatio="none">
                 {(() => {
@@ -147,6 +147,7 @@ export default function WorkerDashboard() {
                           rx="8"
                           className="bar-rect"
                         />
+
                         <text
                           x={x + (barW - 20) / 2}
                           y={155}
@@ -155,6 +156,7 @@ export default function WorkerDashboard() {
                         >
                           {m.month.split("-")[1]}/{m.month.split("-")[0].slice(2)}
                         </text>
+
                         <text
                           x={x + (barW - 20) / 2}
                           y={y - 6}
@@ -172,12 +174,12 @@ export default function WorkerDashboard() {
           </div>
         </div>
 
-        {/* ---------- MID ROW (Recent Bills Only for Worker) ---------- */}
+        {/* ---------- RECENT BILLS ---------- */}
         <div className="admin-mid">
           <div className="glass panel recent-panel" style={{ gridColumn: "1 / span 2" }}>
-            <h3>Recent Bills</h3>
+            <h3>{t("Recent Bills")}</h3>
 
-            {!last5.length && <p>No recent bills</p>}
+            {!last5.length && <p>{t("No recent bills")}</p>}
 
             <div className="recent-list">
               {last5.map((b) => (

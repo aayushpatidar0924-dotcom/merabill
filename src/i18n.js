@@ -14,6 +14,11 @@ i18n.use(initReactI18next).init({
         "Language": "Language",
         "English": "English",
         "Hindi": "Hindi",
+        "View Bills": "View Bills",
+        "Add Bills": "Add Bills",
+        "Logout": "Logout",
+        "Workers": "Workers",
+        "Admin Panel":"Admin Panel",
 
         // 🏠 Home Page
         "Mera Bill": "Mera Bill",
@@ -62,7 +67,7 @@ i18n.use(initReactI18next).init({
         "Your Name": "Your Name",
         "Your Email": "Your Email",
         "Describe your issue...": "Describe your issue...",
-        "Send Message 🚀": "Send Message 🚀",
+        "Send Message": "Send Message",
         "✅ Message sent successfully!": "✅ Message sent successfully!",
         "❌ Failed to send message. Please try again later.":
           "❌ Failed to send message. Please try again later.",
@@ -84,7 +89,6 @@ i18n.use(initReactI18next).init({
         "Worker": "Worker",
         "Full Name": "Full Name",
         "Phone Number": "Phone Number",
-        "Sign Up 🚀": "Sign Up 🚀",
         "Already have an account?": "Already have an account?",
         "Welcome! Choose your role and create an account to start using Mera Bill.":
           "Welcome! Choose your role and create an account to start using Mera Bill.",
@@ -92,7 +96,75 @@ i18n.use(initReactI18next).init({
         // ⚙️ Footer
         "Smart Billing. Simple Management. Total Control.":
           "Smart Billing. Simple Management. Total Control.",
-        "All rights reserved.": "All rights reserved."
+        "All rights reserved.": "All rights reserved.",
+
+        // worker home
+        "Please login as worker.": "Please login as worker.",
+        "Loading dashboard...": "Loading dashboard...",
+        "Your Bills": "Your Bills",
+        "Your Activity (Last 6 Months)": "Your Activity (Last 6 Months)",
+        "Recent Bills": "Recent Bills",
+        "No recent bills": "No recent bills",
+
+         // ViewBill Page
+      "Loading bills...": "Loading bills...",
+      "No bills uploaded yet.": "No bills uploaded yet.",
+      "Are you sure you want to delete this bill?": "Are you sure you want to delete this bill?",
+      "Bill deleted successfully!": "Bill deleted successfully!",
+      "Bill updated successfully!": "Bill updated successfully!",
+      "No Date": "No Date",
+      "Type": "Type",
+      "Amount": "Amount",
+      "Bill No": "Bill No",
+      "Date":"Date",
+      "Uploaded By:": "Uploaded By:",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "Save": "Save",
+      "Cancel": "Cancel",
+      "N/A": "N/A",
+      "Bill": "Bill",
+
+      // Add bill
+    "Add New Bill": "Add New Bill",
+    "Bill Type": "Bill Type",
+    "Select Bill Type": "Select Bill Type",
+    "Light Bill": "Light Bill",
+    "Petrol Pump Bill": "Petrol Pump Bill",
+    "Food Bill": "Food Bill",
+    "Shopping Bill": "Shopping Bill",
+    "Medical Bill": "Medical Bill",
+    "Transport Bill": "Transport Bill",
+    "Enter amount": "Enter amount",
+    "Bill Number": "Bill Number",
+    "Upload Bill": "Upload Bill",
+    "Please upload bill image!": "Please upload bill image!",
+    "Bill uploaded successfully!": "Bill uploaded successfully!",
+    "Upload failed!": "Upload failed!",
+
+    // profile page
+     "Loading...": "Loading...",
+    "User Profile": "User Profile",
+    "Profile": "Profile",
+    "Name": "Name",
+    "Organization": "Organization",
+    "Role": "Role",
+    "Edit Profile": "Edit Profile",
+
+    // Admin Dashboard
+      "Please login as admin and try again.": "Please login as admin and try again.",
+      "Org Bills": "Org Bills",
+      "Bills in last 6 months": "Bills in last 6 months",
+      "Bill Types": "Bill Types",
+      "No bills yet": "No bills yet",
+      "Failed to load dashboard data. Check backend.": "Failed to load dashboard data. Check backend.",
+
+      // Workers Page
+      "Workers of": "Workers of",
+      "Failed to load workers": "Failed to load workers",
+      "Server connection error": "Server connection error",
+      "No workers found.": "No workers found.",
+
       },
     },
     hi: {
@@ -106,6 +178,11 @@ i18n.use(initReactI18next).init({
         "Language": "भाषा",
         "English": "अंग्रेज़ी",
         "Hindi": "हिन्दी",
+        "View Bills": "बिल देखें",
+        "Add Bills": "बिल जोड़ें",
+        "Logout": "लॉग आउट",
+        "Workers": "कर्मचारी",
+        "Admin Panel":"प्रशासन पैनल",
 
         // 🏠 Home Page
         "Mera Bill": "मेरा बिल",
@@ -126,7 +203,6 @@ i18n.use(initReactI18next).init({
 
         // ℹ️ About Page (Full)
         "About Mera Bill": "मेरा बिल के बारे में",
-        "Mera Bill": "मेरा बिल",
         "is a smart billing and invoice management web app built for organizations and startups. It automates billing, tracks transactions, and keeps your accounts up to date with next-gen analytics and security.":
           "एक स्मार्ट बिलिंग और इनवॉइस प्रबंधन वेब ऐप है जो संगठनों और स्टार्टअप्स के लिए बनाया गया है। यह बिलिंग को स्वचालित करता है, लेनदेन को ट्रैक करता है और आपके खातों को उन्नत विश्लेषण और सुरक्षा के साथ अद्यतन रखता है।",
         "Our platform is designed to simplify complex finance workflows so you can focus on what really matters — growing your business with confidence and clarity.":
@@ -154,7 +230,7 @@ i18n.use(initReactI18next).init({
         "Your Name": "आपका नाम",
         "Your Email": "आपका ईमेल",
         "Describe your issue...": "अपनी समस्या का विवरण दें...",
-        "Send Message 🚀": "संदेश भेजें 🚀",
+        "Send Message": "संदेश भेजें ",
         "✅ Message sent successfully!": "✅ संदेश सफलतापूर्वक भेजा गया!",
         "❌ Failed to send message. Please try again later.":
           "❌ संदेश भेजने में विफल। कृपया बाद में पुनः प्रयास करें।",
@@ -176,7 +252,6 @@ i18n.use(initReactI18next).init({
         "Worker": "कर्मी",
         "Full Name": "पूरा नाम",
         "Phone Number": "फ़ोन नंबर",
-        "Sign Up 🚀": "साइन अप 🚀",
         "Already have an account?": "क्या आपके पास पहले से खाता है?",
         "Welcome! Choose your role and create an account to start using Mera Bill.":
           "स्वागत है! अपनी भूमिका चुनें और मेरा बिल का उपयोग शुरू करने के लिए एक खाता बनाएं।",
@@ -184,7 +259,73 @@ i18n.use(initReactI18next).init({
         // ⚙️ Footer
         "Smart Billing. Simple Management. Total Control.":
           "स्मार्ट बिलिंग। सरल प्रबंधन। सम्पूर्ण नियंत्रण।",
-        "All rights reserved.": "सभी अधिकार सुरक्षित।"
+        "All rights reserved.": "सभी अधिकार सुरक्षित।",
+
+        // worker home
+        "Please login as worker.": "कृपया वर्कर के रूप में लॉगिन करें।",
+        "Loading dashboard...": "डैशबोर्ड लोड हो रहा है...",
+        "Your Bills": "आपके बिल",
+        "Your Activity (Last 6 Months)": "आपकी गतिविधि (पिछले 6 महीनों में)",
+        "Recent Bills": "हाल के बिल",
+        "No recent bills": "कोई हाल के बिल नहीं",
+
+         // ViewBill Page
+      "Loading bills...": "बिल लोड हो रहे हैं...",
+      "No bills uploaded yet.": "अभी तक कोई बिल अपलोड नहीं किया गया।",
+      "Are you sure you want to delete this bill?": "क्या आप वाकई इस बिल को हटाना चाहते हैं?",
+      "Bill deleted successfully!": "बिल सफलतापूर्वक हटाया गया!",
+      "Bill updated successfully!": "बिल सफलतापूर्वक अपडेट किया गया!",
+      "No Date": "कोई तिथि नहीं",
+      "Type": "प्रकार",
+      "Amount": "राशि",
+      "Bill No": "बिल नंबर",
+      "Uploaded By:": "अपलोड किया गया:",
+      "Edit": "संपादित करें",
+      "Date":"तारीख",
+      "Delete": "हटाएं",
+      "Save": "सहेजें",
+      "Cancel": "रद्द करें",
+      "N/A": "उपलब्ध नहीं",
+      "Bill": "बिल",
+
+      // Add bill
+      "Add New Bill": "नया बिल जोड़ें",
+    "Bill Type": "बिल का प्रकार",
+    "Select Bill Type": "बिल का प्रकार चुनें",
+    "Light Bill": "बिजली का बिल",
+    "Petrol Pump Bill": "पेट्रोल पंप बिल",
+    "Food Bill": "खाद्य बिल",
+    "Shopping Bill": "खरीदारी बिल",
+    "Medical Bill": "चिकित्सा बिल",
+    "Transport Bill": "यातायात बिल",
+    "Enter amount": "राशि दर्ज करें",
+    "Bill Number": "बिल संख्या",
+    "Upload Bill": "बिल अपलोड करें",
+    "Please upload bill image!": "कृपया बिल की छवि अपलोड करें!",
+    "Bill uploaded successfully!": "बिल सफलतापूर्वक अपलोड हुआ!",
+    "Upload failed!": "अपलोड विफल!",
+
+    // profile page
+    "Loading...": "लोड हो रहा है...",
+    "User Profile": "उपयोगकर्ता प्रोफ़ाइल",
+    "Profile": "प्रोफ़ाइल",
+    "Name": "नाम",
+    "Organization": "संगठन",
+    "Role": "भूमिका",
+    "Edit Profile": "प्रोफ़ाइल संपादित करें",
+
+    "Please login as admin and try again.": "कृपया व्यवस्थापक के रूप में लॉगिन करें और पुनः प्रयास करें।",
+    "Org Bills": "संगठन के बिल",
+    "Bills in last 6 months": "पिछले 6 महीनों में बिल",
+    "Bill Types": "बिल प्रकार",
+    "No bills yet": "अभी तक कोई बिल नहीं",
+    "Failed to load dashboard data. Check backend.": "डैशबोर्ड डेटा लोड करने में विफल। बैकएंड जांचें।",
+
+    // Workers Page
+    "Workers of": "के कर्मचारी",
+    "Failed to load workers": "कर्मचारियों को लोड करने में विफल",
+    "Server connection error": "सर्वर कनेक्शन त्रुटि",
+    "No workers found.": "कोई कर्मचारी नहीं मिला।",
       },
     },
   },

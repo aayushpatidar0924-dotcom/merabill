@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AdminNavbar from "./AdminNavbar";
+import { useTranslation } from "react-i18next";
 import "./workers.css";
 
 function Workers() {
+  const { t } = useTranslation();
   const [workers, setWorkers] = useState([]);
   const [error, setError] = useState("");
 
@@ -11,8 +13,6 @@ function Workers() {
   const organization = savedUser?.organization;
 
   useEffect(() => {
-    console.log("ORG RECEIVED:", organization);
-
     const fetchWorkers = async () => {
       try {
         const res = await fetch(`http://localhost:5000/workers/${organization}`);
@@ -21,23 +21,23 @@ function Workers() {
         if (data.success) {
           setWorkers(data.workers);
         } else {
-          setError("Failed to load workers");
+          setError(t("Failed to load workers"));
         }
       } catch (err) {
         console.error(err);
-        setError("Server connection error");
+        setError(t("Server connection error"));
       }
     };
 
     if (organization) fetchWorkers();
-  }, [organization]);
+  }, [organization, t]);
 
   return (
     <>
       <AdminNavbar />
-      
+
       <div className="workers-page">
-        <h1>👷 Workers of {organization}</h1>
+        <h1>👷 {t("Workers of")} {organization}</h1>
 
         {error && <p className="error-text">{error}</p>}
 
@@ -59,7 +59,7 @@ function Workers() {
               </div>
             ))
           ) : (
-            !error && <p>No workers found.</p>
+            !error && <p>{t("No workers found.")}</p>
           )}
         </div>
       </div>
