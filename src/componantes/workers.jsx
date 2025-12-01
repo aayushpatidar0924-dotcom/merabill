@@ -8,7 +8,9 @@ function Workers() {
   const [workers, setWorkers] = useState([]);
   const [error, setError] = useState("");
 
-  // ✅ Get organization from localStorage
+  // ⭐ NEW: Search term for filtering workers
+  const [searchTerm, setSearchTerm] = useState("");
+
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const organization = savedUser?.organization;
 
@@ -32,6 +34,16 @@ function Workers() {
     if (organization) fetchWorkers();
   }, [organization, t]);
 
+  // ⭐ Filter workers based on search term
+  const filteredWorkers = workers.filter((worker) => {
+    const s = searchTerm.toLowerCase();
+    return (
+      worker.name?.toLowerCase().includes(s) ||
+      worker.email?.toLowerCase().includes(s) ||
+      worker.phone?.toString().includes(s)
+    );
+  });
+
   return (
     <>
       <AdminNavbar />
@@ -41,9 +53,20 @@ function Workers() {
 
         {error && <p className="error-text">{error}</p>}
 
+        {/* ⭐ NEW: Search Bar */}
+        <div className="search-bar-container">
+          <input
+            type="text"
+            placeholder={t("Search workers")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+
         <div className="worker-list">
-          {workers.length > 0 ? (
-            workers.map((worker) => (
+          {filteredWorkers.length > 0 ? (
+            filteredWorkers.map((worker) => (
               <div key={worker._id} className="worker-card">
                 <img
                   src={

@@ -20,6 +20,10 @@ i18n.use(initReactI18next).init({
         "Workers": "Workers",
         "Admin Panel":"Admin Panel",
 
+        // search bar
+        "Search workers":"Search workers (name, email, phone...)",
+        "Search bills":"Search bills (type, date, amount, bill no...)",
+
         // 🏠 Home Page
         "Mera Bill": "Mera Bill",
         "Next-Gen Billing & Invoice Automation for Modern Organizations":
@@ -183,6 +187,11 @@ i18n.use(initReactI18next).init({
         "Logout": "लॉग आउट",
         "Workers": "कर्मचारी",
         "Admin Panel":"प्रशासन पैनल",
+
+        // search bar
+        "Search workers":"कर्मचारियों को खोजें (नाम, ईमेल, फ़ोन...)",
+        "Search bills":"बिल खोजें (प्रकार, तारीख, राशि, बिल नंबर...)",
+
 
         // 🏠 Home Page
         "Mera Bill": "मेरा बिल",

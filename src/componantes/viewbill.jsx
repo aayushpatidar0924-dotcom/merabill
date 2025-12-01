@@ -16,6 +16,10 @@ function ViewBill() {
 
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ⭐ NEW: Search Term State
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [editingBillId, setEditingBillId] = useState(null);
   const [editData, setEditData] = useState({
     type: "",
@@ -106,6 +110,19 @@ function ViewBill() {
     });
   };
 
+  // ⭐ NEW: Filter bills based on search
+  const filteredBills = bills.filter((bill) => {
+    const search = searchTerm.toLowerCase();
+
+    return (
+      bill.type?.toLowerCase().includes(search) ||
+      bill.billNumber?.toString().includes(search) ||
+      bill.amount?.toString().includes(search) ||
+      formatDate(bill.date).toLowerCase().includes(search) ||
+      (role === "manager" && bill.userId?.name?.toLowerCase().includes(search))
+    );
+  });
+
   if (loading)
     return (
       <h2 style={{ color: "white", textAlign: "center" }}>
@@ -117,13 +134,24 @@ function ViewBill() {
     <>
       {role === "manager" ? <AdminNavbar /> : <WorkerNavbar />}
 
+      {/* ⭐ NEW: Search Bar */}
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder={t("Search bills")}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
       <div className="view-bill-container">
-        {bills.length === 0 ? (
+        {filteredBills.length === 0 ? (
           <h3 style={{ color: "white", textAlign: "center" }}>
-            {t("No bills uploaded yet.")}
+            {t("No bills found.")}
           </h3>
         ) : (
-          bills.map((bill) => (
+          filteredBills.map((bill) => (
             <div key={bill._id} className="bill-card">
               <div className="bill-image-section">
                 <img
@@ -141,14 +169,18 @@ function ViewBill() {
 
               {editingBillId === bill._id ? (
                 <div className="bill-details">
-                  <p><strong>{t("Type")}:</strong></p>
+                  <p>
+                    <strong>{t("Type")}:</strong>
+                  </p>
                   <input
                     name="type"
                     value={editData.type}
                     onChange={handleEditChange}
                   />
 
-                  <p><strong>{t("Date")}:</strong></p>
+                  <p>
+                    <strong>{t("Date")}:</strong>
+                  </p>
                   <input
                     type="date"
                     name="date"
@@ -156,7 +188,9 @@ function ViewBill() {
                     onChange={handleEditChange}
                   />
 
-                  <p><strong>{t("Amount")}:</strong></p>
+                  <p>
+                    <strong>{t("Amount")}:</strong>
+                  </p>
                   <input
                     type="number"
                     name="amount"
@@ -164,14 +198,19 @@ function ViewBill() {
                     onChange={handleEditChange}
                   />
 
-                  <p><strong>{t("Bill No")}:</strong></p>
+                  <p>
+                    <strong>{t("Bill No")}:</strong>
+                  </p>
                   <input
                     name="billNumber"
                     value={editData.billNumber}
                     onChange={handleEditChange}
                   />
 
-                  <button onClick={() => saveEdit(bill._id)} className="save-btn">
+                  <button
+                    onClick={() => saveEdit(bill._id)}
+                    className="save-btn"
+                  >
                     {t("Save")}
                   </button>
                   <button
