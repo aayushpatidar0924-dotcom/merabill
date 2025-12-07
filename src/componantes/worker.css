@@ -92,3 +92,142 @@
   .top{ flex-direction:column; align-items:flex-start; gap:12px; }
   .avatar{ width:100px; height:100px; }
 }
+/* ---------- DASHBOARD PANELS ---------- */
+.admin-dashboard {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: grid;
+  gap: 30px;
+}
+
+.admin-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.admin-profile {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.profile-avatar {
+  width: 110px;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.profile-right {
+  flex: 1;
+}
+
+.admin-name {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.admin-org {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin: 5px 0 15px 0;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 15px;
+}
+
+/* Chart Card */
+.chart-card {
+  padding: 20px;
+}
+
+.bars-svg rect.bar-rect {
+  fill: #38bdf8;
+  transition: all 0.3s ease;
+}
+
+.bars-svg rect.bar-rect:hover {
+  fill: #f472b6;
+}
+
+.bar-label, .bar-value {
+  fill: white;
+  font-size: 12px;
+}
+
+/* Recent Bills */
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.recent-item {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.recent-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Admin Lists */
+.admin-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.admin-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 20px;
+  border-radius: 15px;
+  min-width: 200px;
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  color: white;
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+}
+
+.admin-card button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.remove-btn {
+  background-color: #f87171;
+  color: white;
+}
+
+.accept-btn {
+  background-color: #34d399;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-top {
+    grid-template-columns: 1fr;
+  }
+  .admin-dashboard {
+    margin: 20px auto;
+  }
+}

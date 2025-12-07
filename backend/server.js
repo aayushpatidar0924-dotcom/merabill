@@ -13,21 +13,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ---------------- PATH FIX ---------------- */
+// PATH FIX
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-/* ---------------- DATABASE ---------------- */
+// DATABASE
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((err) => console.error("❌ Mongo Error:", err));
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("Mongo Error:", err));
 
-/* ---------------- SCHEMAS ---------------- */
+/* ===========================
+   USER SCHEMA 
+===========================*/
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -36,23 +35,31 @@ const userSchema = new mongoose.Schema({
   role: String,
   organization: String,
   profileImage: String,
+
+  requestSentTo: { type: [String], default: [] }, // adminIds
+  acceptedAdmins: { type: [String], default: [] }, // adminIds
 });
 
 const User = mongoose.model("User", userSchema);
 
+/* ===========================
+   BILL SCHEMA  
+===========================*/
 const billSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   type: String,
-  amount: { type: Number, required: true },
+  amount: Number,
   billNumber: String,
-  date: { type: Date, required: true },
+  date: Date,
   billImage: String,
   createdAt: { type: Date, default: Date.now },
 });
 
 const Bill = mongoose.model("Bill", billSchema);
 
-/* ---------------- MULTER ---------------- */
+/* ===========================
+   MULTER UPLOAD
+===========================*/
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) =>
@@ -60,7 +67,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-/* ---------------- AUTH ---------------- */
+/* ===========================
+   SIGNUP
+===========================*/
 app.post("/signup", upload.single("profileImage"), async (req, res) => {
   try {
     const { name, email, phone, password, role, organization } = req.body;
@@ -83,14 +92,18 @@ app.post("/signup", upload.single("profileImage"), async (req, res) => {
   }
 });
 
+/* ===========================
+   LOGIN
+===========================*/
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email, password });
 
     if (!user)
-      return res.status(400).json({ success: false, message: "Invalid Login!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Login!" });
 
     res.json({ success: true, user });
   } catch (err) {
@@ -99,38 +112,161 @@ app.post("/login", async (req, res) => {
   }
 });
 
-/* ---------------- WORKERS ---------------- */
+/* ===========================
+   WORKERS LIST API
+===========================*/
 app.get("/workers/:organization", async (req, res) => {
   try {
-    const workers = await User.find({
-      organization: req.params.organization,
-      role: { $regex: /^worker$/i },
-    });
+    const { filter = "your", search = "", adminId } = req.query;
 
-    res.json({ success: true, workers });
+    let query = { role: { $in: ["worker", "admin"] } };
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { organization: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    let users = await User.find(query);
+
+    if (filter === "your") {
+      users = users.filter((u) => u.acceptedAdmins.includes(adminId));
+    }
+
+    if (filter === "new") {
+      users = users.filter(
+        (u) =>
+          !u.acceptedAdmins.includes(adminId) &&
+          !u.requestSentTo.includes(adminId) &&
+          u._id.toString() !== adminId
+      );
+    }
+
+    if (filter === "pending") {
+      users = users.filter(
+        (u) =>
+          u.requestSentTo.includes(adminId) &&
+          !u.acceptedAdmins.includes(adminId)
+      );
+    }
+
+    res.json({ success: true, workers: users });
   } catch (err) {
     console.log("Workers Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-/* ---------------- PROFILE ---------------- */
+/* ===========================
+   SEND REQUEST
+===========================*/
+app.post("/send-request", async (req, res) => {
+  try {
+    const { workerId, adminId } = req.body;
+    const worker = await User.findById(workerId);
+    const admin = await User.findById(adminId);
+
+    if (!worker || !admin)
+      return res.status(404).json({ success: false, message: "Worker/Admin not found" });
+
+    if (!worker.requestSentTo.includes(adminId)) {
+      worker.requestSentTo.push(adminId);
+      await worker.save();
+    }
+
+    res.json({ success: true, message: "Request sent", worker, admin });
+  } catch (err) {
+    console.log("Send Request Error:", err);
+    res.status(500).json({ success: false, message: "Error sending request" });
+  }
+});
+
+/* ===========================
+   REMOVE REQUEST
+===========================*/
+app.post("/remove-request", async (req, res) => {
+  try {
+    const { workerId, adminId } = req.body;
+    const worker = await User.findById(workerId);
+    if (!worker)
+      return res.status(404).json({ success: false, message: "Worker not found" });
+
+    worker.requestSentTo = worker.requestSentTo.filter((id) => id !== adminId);
+    await worker.save();
+
+    res.json({ success: true, message: "Request removed", worker });
+  } catch (err) {
+    console.log("Remove Request Error:", err);
+    res.status(500).json({ success: false, message: "Error removing request" });
+  }
+});
+
+/* ===========================
+   REMOVE ADMIN (Worker side)
+===========================*/
+app.post("/remove-admin", async (req, res) => {
+  try {
+    const { workerId, adminId } = req.body;
+    const worker = await User.findById(workerId);
+    if (!worker)
+      return res.status(404).json({ success: false, message: "Worker not found" });
+
+    worker.acceptedAdmins = worker.acceptedAdmins.filter((id) => id !== adminId);
+    await worker.save();
+
+    res.json({ success: true, message: "Admin removed", worker });
+  } catch (err) {
+    console.log("Remove Admin Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/* ===========================
+   ACCEPT REQUEST  
+===========================*/
+app.post("/accept-request", async (req, res) => {
+  try {
+    const { workerId, adminId } = req.body;
+    const worker = await User.findById(workerId);
+    if (!worker)
+      return res.status(404).json({ success: false, message: "Worker not found" });
+
+    worker.requestSentTo = worker.requestSentTo.filter((id) => id !== adminId);
+
+    if (!worker.acceptedAdmins.includes(adminId)) {
+      worker.acceptedAdmins.push(adminId);
+    }
+
+    await worker.save();
+    res.json({ success: true, message: "Request accepted", worker });
+  } catch (err) {
+    console.log("Accept Request Error:", err);
+    res.status(500).json({ success: false, message: "Error accepting request" });
+  }
+});
+
+/* ===========================
+   PROFILE
+===========================*/
 app.get("/profile/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const u = await User.findById(req.params.id);
+    if (!u)
+      return res.status(404).json({ success: false, message: "User not found" });
 
-    if (!user)
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
-
-    res.json({ success: true, user });
+    res.json({ success: true, user: u });
   } catch (err) {
     console.log("Profile Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
+/* ===========================
+   PROFILE PHOTO UPDATE
+===========================*/
 app.put("/profile/:id/photo", upload.single("profileImage"), async (req, res) => {
   try {
     if (!req.file)
@@ -138,37 +274,41 @@ app.put("/profile/:id/photo", upload.single("profileImage"), async (req, res) =>
         .status(400)
         .json({ success: false, message: "No image uploaded" });
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const updated = await User.findByIdAndUpdate(
       req.params.id,
       { profileImage: req.file.filename },
       { new: true }
     );
 
-    res.json({
-      success: true,
-      message: "Profile photo updated",
-      user: updatedUser,
-    });
+    res.json({ success: true, user: updated });
   } catch (err) {
     console.log("Photo Upload Error:", err);
     res.status(500).json({ success: false, message: "Error uploading photo" });
   }
 });
+/* ===========================
+   GET ADMIN DETAILS BY IDS
+===========================*/
+app.post("/get-admin-details", async (req, res) => {
+  const { ids } = req.body;
+  try {
+    const objectIds = ids.map(id => mongoose.Types.ObjectId(id)); // convert to ObjectId
+    const admins = await User.find({ _id: { $in: objectIds }, role: "admin" })
+                             .select("_id name email organization");
+    res.json({ success: true, admins });
+  } catch (err) {
+    console.log("Get Admin Details Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
-/* ---------------- ADD BILL ---------------- */
+
+/* ===========================
+   ADD BILL  
+===========================*/
 app.post("/add-bill", upload.single("billImage"), async (req, res) => {
   try {
     const { userId, type, date, amount, billNumber } = req.body;
-
-    if (!req.file)
-      return res
-        .status(400)
-        .json({ success: false, message: "Bill image is required" });
-
-    if (!date || isNaN(new Date(date).getTime()))
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid date format" });
 
     const newBill = new Bill({
       userId,
@@ -180,15 +320,16 @@ app.post("/add-bill", upload.single("billImage"), async (req, res) => {
     });
 
     await newBill.save();
-
-    res.json({ success: true, message: "Bill added successfully!" });
+    res.json({ success: true, message: "Bill added!" });
   } catch (err) {
     console.log("Bill Error:", err);
     res.status(500).json({ success: false, message: "Error adding bill" });
   }
 });
 
-/* ---------------- GET USER BILLS ---------------- */
+/* ===========================
+   GET USER BILLS  
+===========================*/
 app.get("/bills/:userId", async (req, res) => {
   try {
     const bills = await Bill.find({ userId: req.params.userId }).sort({
@@ -202,16 +343,22 @@ app.get("/bills/:userId", async (req, res) => {
   }
 });
 
-/* ---------------- GET ORG BILLS ---------------- */
-app.get("/bills/org/:organization", async (req, res) => {
+/* ===========================
+   GET ORG BILLS (Admin only accepted workers)
+===========================*/
+app.get("/bills/org/:organization/:adminId", async (req, res) => {
   try {
+    const { organization, adminId } = req.params;
+
+    // Only accepted workers
     const workers = await User.find({
-      organization: req.params.organization,
+      organization,
+      acceptedAdmins: { $in: [adminId] },
     }).select("_id");
 
-    const workerIds = workers.map((u) => u._id);
+    const ids = workers.map((u) => u._id);
 
-    const bills = await Bill.find({ userId: { $in: workerIds } })
+    const bills = await Bill.find({ userId: { $in: ids } })
       .populate("userId", "name email phone organization")
       .sort({ date: -1 });
 
@@ -222,7 +369,28 @@ app.get("/bills/org/:organization", async (req, res) => {
   }
 });
 
-/* ---------------- UPDATE BILL ---------------- */
+/* ===========================
+   GET ACCEPTED WORKERS
+===========================*/
+app.get("/workers/accepted/:adminId", async (req, res) => {
+  try {
+    const { adminId } = req.params;
+
+    const workers = await User.find({
+      acceptedAdmins: { $in: [adminId] },
+      role: "worker",
+    }).select("_id name email phone organization");
+
+    res.json({ success: true, workers });
+  } catch (err) {
+    console.log("Accepted Workers Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/* ===========================
+   UPDATE BILL
+===========================*/
 app.put("/bill/:id", async (req, res) => {
   try {
     const { type, date, amount, billNumber } = req.body;
@@ -239,30 +407,24 @@ app.put("/bill/:id", async (req, res) => {
     );
 
     if (!updated)
-      return res
-        .status(404)
-        .json({ success: false, message: "Bill not found" });
+      return res.status(404).json({ success: false, message: "Bill not found" });
 
-    res.json({
-      success: true,
-      message: "Bill updated successfully!",
-      bill: updated,
-    });
+    res.json({ success: true, message: "Bill updated!", bill: updated });
   } catch (err) {
     console.log("Bill Update Error:", err);
     res.status(500).json({ success: false, message: "Error updating bill" });
   }
 });
 
-/* ---------------- DELETE BILL ---------------- */
+/* ===========================
+   DELETE BILL
+===========================*/
 app.delete("/bill/:id", async (req, res) => {
   try {
     const deleted = await Bill.findByIdAndDelete(req.params.id);
 
     if (!deleted)
-      return res
-        .status(404)
-        .json({ success: false, message: "Bill not found" });
+      return res.status(404).json({ success: false, message: "Bill not found" });
 
     res.json({ success: true, message: "Bill deleted!" });
   } catch (err) {
@@ -271,11 +433,15 @@ app.delete("/bill/:id", async (req, res) => {
   }
 });
 
-/* ---------------- CONTACT FORM ---------------- */
+/* ===========================
+   CONTACT ROUTES
+===========================*/
 app.use("/contact", contactRoutes);
 
-/* ---------------- SERVER ---------------- */
+/* ===========================
+   SERVER START
+===========================*/
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
+  console.log(`Server running at http://localhost:${PORT}`)
 );

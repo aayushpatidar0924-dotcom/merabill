@@ -2,26 +2,30 @@ import React, { useEffect, useState } from "react";
 import AdminNavbar from "./AdminNavbar";
 import { useTranslation } from "react-i18next";
 import "./workers.css";
+import axios from "axios";
 
 function Workers() {
   const { t } = useTranslation();
   const [workers, setWorkers] = useState([]);
   const [error, setError] = useState("");
 
-  // ⭐ NEW: Search term for filtering workers
   const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("your"); 
 
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const organization = savedUser?.organization;
+  const adminId = savedUser?._id;
 
+  // Fetch workers
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/workers/${organization}`);
-        const data = await res.json();
+        const res = await axios.get(`http://localhost:5000/workers/${organization}`, {
+          params: { filter, search: searchTerm, adminId }
+        });
 
-        if (data.success) {
-          setWorkers(data.workers);
+        if (res.data.success) {
+          setWorkers(res.data.workers);
         } else {
           setError(t("Failed to load workers"));
         }
@@ -32,17 +36,36 @@ function Workers() {
     };
 
     if (organization) fetchWorkers();
-  }, [organization, t]);
+  }, [organization, filter, searchTerm, adminId, t]);
 
-  // ⭐ Filter workers based on search term
-  const filteredWorkers = workers.filter((worker) => {
-    const s = searchTerm.toLowerCase();
-    return (
-      worker.name?.toLowerCase().includes(s) ||
-      worker.email?.toLowerCase().includes(s) ||
-      worker.phone?.toString().includes(s)
-    );
-  });
+  // Handlers
+  const handleSendRequest = async (workerId) => {
+    try {
+      await axios.post("http://localhost:5000/send-request", { workerId, adminId });
+      // refresh list
+      setWorkers(prev => prev.map(w => w._id === workerId ? { ...w, requestSentTo: [...w.requestSentTo, adminId] } : w));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveRequest = async (workerId) => {
+    try {
+      await axios.post("http://localhost:5000/remove-request", { workerId, adminId });
+      setWorkers(prev => prev.map(w => w._id === workerId ? { ...w, requestSentTo: w.requestSentTo.filter(id => id !== adminId) } : w));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveWorker = async (workerId) => {
+    try {
+      await axios.post("http://localhost:5000/remove-admin", { workerId, adminId });
+      setWorkers(prev => prev.filter(w => w._id !== workerId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -53,20 +76,30 @@ function Workers() {
 
         {error && <p className="error-text">{error}</p>}
 
-        {/* ⭐ NEW: Search Bar */}
-        <div className="search-bar-container">
+        {/* SEARCH + FILTER */}
+        <div className="top-controls">
           <input
             type="text"
-            placeholder={t("Search workers")}
+            placeholder={t("Search workers (name, email, phone...)")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="filter-dropdown"
+          >
+            <option value="your">{t("Your Workers")}</option>
+            <option value="new">{t("New Workers")}</option>
+            <option value="pending">{t("Request Pending")}</option>
+          </select>
         </div>
 
+        {/* WORKERS LIST */}
         <div className="worker-list">
-          {filteredWorkers.length > 0 ? (
-            filteredWorkers.map((worker) => (
+          {workers.length > 0 ? (
+            workers.map((worker) => (
               <div key={worker._id} className="worker-card">
                 <img
                   src={
@@ -79,6 +112,25 @@ function Workers() {
                 <h3>{worker.name}</h3>
                 <p>{worker.email}</p>
                 <p>{worker.phone}</p>
+
+                {/* Buttons */}
+                {filter === "new" && (
+                  <button onClick={() => handleSendRequest(worker._id)}>
+                    {t("Send Request")}
+                  </button>
+                )}
+
+                {filter === "pending" && (
+                  <button onClick={() => handleRemoveRequest(worker._id)}>
+                    {t("Remove Request")}
+                  </button>
+                )}
+
+                {filter === "your" && (
+                  <button onClick={() => handleRemoveWorker(worker._id)}>
+                    {t("Remove")}
+                  </button>
+                )}
               </div>
             ))
           ) : (

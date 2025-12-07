@@ -4,12 +4,12 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import "./admin.css";
 
+// Helpers for month keys
 function getMonthKey(date) {
   const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; // YYYY-MM
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-// Build last N month keys (latest last)
 function lastNMonthsKeys(n = 6) {
   const keys = [];
   const now = new Date();
@@ -34,49 +34,42 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // fetch data
   useEffect(() => {
-    if (!adminId || !organization) return;
+  if (!adminId || !organization) return;
 
-    setLoading(true);
-    setError("");
+  setLoading(true);
+  setError("");
 
-    const p1 = axios.get(`http://localhost:5000/profile/${adminId}`);
-    const p2 = axios.get(`http://localhost:5000/bills/${adminId}`);
-    const p3 = axios.get(`http://localhost:5000/bills/org/${organization}`);
-    const p4 = axios.get(`http://localhost:5000/workers/${organization}`);
+  const fetchProfile = axios.get(`http://localhost:5000/profile/${adminId}`);
+  const fetchAdminBills = axios.get(`http://localhost:5000/bills/${adminId}`);
+  const fetchOrgBills = axios.get(`http://localhost:5000/bills/org/${organization}/${adminId}`);
+  const fetchWorkers = axios.get(`http://localhost:5000/workers/accepted/${adminId}`);
 
-    Promise.all([p1, p2, p3, p4])
-      .then(([r1, r2, r3, r4]) => {
-        setAdmin(r1.data.user || {});
-        setAdminBills(r2.data.bills || []);
-        setOrgBills(r3.data.bills || []);
-        setWorkersList(r4.data.workers || []);
-      })
-      .catch((err) => {
-        console.error("Admin fetch error:", err);
-        setError(t("Failed to load dashboard data. Check backend."));
-      })
-      .finally(() => setLoading(false));
-  }, [adminId, organization, t]);
+  Promise.all([fetchProfile, fetchAdminBills, fetchOrgBills, fetchWorkers])
+    .then(([profileRes, adminBillsRes, orgBillsRes, workersRes]) => {
+      setAdmin(profileRes.data.user || {});
+      setAdminBills(adminBillsRes.data.bills || []);
+      setOrgBills(orgBillsRes.data.bills || []);
+      setWorkersList(workersRes.data.workers || []);
+    })
+    .catch((err) => {
+      console.error("Admin fetch error:", err);
+      setError(t("Failed to load dashboard data. Check backend."));
+    })
+    .finally(() => setLoading(false));
+}, [adminId, organization, t]);
 
-  // derived stats
   const workersCount = workersList.length;
   const adminBillsCount = adminBills.length;
   const orgBillsCount = orgBills.length;
 
-  // last 5 bills (most recent first)
   const last5 = useMemo(() => {
-    const all = orgBills
-      .slice()
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
-      );
+    const all = orgBills.slice().sort(
+      (a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
+    );
     return all.slice(0, 5);
   }, [orgBills]);
 
-  // bill type counts
   const billTypeCounts = useMemo(() => {
     const map = {};
     orgBills.forEach((b) => {
@@ -86,7 +79,6 @@ export default function Admin() {
     return map;
   }, [orgBills]);
 
-  // monthly distribution for last 6 months
   const months = lastNMonthsKeys(6);
   const monthlyCounts = useMemo(() => {
     const counts = months.reduce((acc, k) => {
@@ -125,6 +117,7 @@ export default function Admin() {
       <AdminNavbar />
 
       <div className="admin-dashboard">
+        {/* Top section: profile + stats */}
         <div className="admin-top">
           <div className="admin-profile glass">
             <div className="profile-left">
@@ -160,6 +153,7 @@ export default function Admin() {
             </div>
           </div>
 
+          {/* Monthly Bills Chart */}
           <div className="chart-card glass">
             <h3>{t("Bills in last 6 months")}</h3>
             <div className="chart-area">
@@ -210,6 +204,7 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* Mid section: types + recent bills */}
         <div className="admin-mid">
           <div className="glass panel types-panel">
             <h3>{t("Bill Types")}</h3>

@@ -29,30 +29,31 @@ function ViewBill() {
   });
 
   const fetchBills = useCallback(() => {
-    if (!savedUser || !savedUser._id) {
+  if (!savedUser || !savedUser._id) {
+    setLoading(false);
+    return;
+  }
+  setLoading(true);
+
+  const url =
+    role === "manager"
+      ? `http://localhost:5000/bills/org/${savedUser.organization}/${savedUser._id}`
+      : `http://localhost:5000/bills/${savedUser._id}`;
+
+  axios
+    .get(url)
+    .then((res) => {
+      if (res.data.success) setBills(res.data.bills);
+      else setBills([]);
       setLoading(false);
-      return;
-    }
-    setLoading(true);
+    })
+    .catch((err) => {
+      console.log("Error fetching bills:", err);
+      setBills([]);
+      setLoading(false);
+    });
+}, [savedUser, role]);
 
-    const url =
-      role === "manager"
-        ? `http://localhost:5000/bills/org/${savedUser.organization}`
-        : `http://localhost:5000/bills/${savedUser._id}`;
-
-    axios
-      .get(url)
-      .then((res) => {
-        if (res.data.success) setBills(res.data.bills);
-        else setBills([]);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log("Error fetching bills:", err);
-        setBills([]);
-        setLoading(false);
-      });
-  }, [savedUser, role]);
 
   useEffect(() => {
     fetchBills();
