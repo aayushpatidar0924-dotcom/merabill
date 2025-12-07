@@ -16,10 +16,7 @@ function ViewBill() {
 
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // ⭐ NEW: Search Term State
   const [searchTerm, setSearchTerm] = useState("");
-
   const [editingBillId, setEditingBillId] = useState(null);
   const [editData, setEditData] = useState({
     type: "",
@@ -29,31 +26,31 @@ function ViewBill() {
   });
 
   const fetchBills = useCallback(() => {
-  if (!savedUser || !savedUser._id) {
-    setLoading(false);
-    return;
-  }
-  setLoading(true);
-
-  const url =
-    role === "manager"
-      ? `http://localhost:5000/bills/org/${savedUser.organization}/${savedUser._id}`
-      : `http://localhost:5000/bills/${savedUser._id}`;
-
-  axios
-    .get(url)
-    .then((res) => {
-      if (res.data.success) setBills(res.data.bills);
-      else setBills([]);
+    if (!savedUser || !savedUser._id) {
       setLoading(false);
-    })
-    .catch((err) => {
-      console.log("Error fetching bills:", err);
-      setBills([]);
-      setLoading(false);
-    });
-}, [savedUser, role]);
+      return;
+    }
+    setLoading(true);
 
+    // ✅ Updated backend endpoint
+    const url =
+      role === "manager"
+        ? `http://localhost:5000/bills/org/${savedUser._id}` // only adminId
+        : `http://localhost:5000/bills/${savedUser._id}`;
+
+    axios
+      .get(url)
+      .then((res) => {
+        if (res.data.success) setBills(res.data.bills);
+        else setBills([]);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error fetching bills:", err);
+        setBills([]);
+        setLoading(false);
+      });
+  }, [savedUser, role]);
 
   useEffect(() => {
     fetchBills();
@@ -111,10 +108,9 @@ function ViewBill() {
     });
   };
 
-  // ⭐ NEW: Filter bills based on search
+  // ⭐ Filter bills based on search
   const filteredBills = bills.filter((bill) => {
     const search = searchTerm.toLowerCase();
-
     return (
       bill.type?.toLowerCase().includes(search) ||
       bill.billNumber?.toString().includes(search) ||
@@ -135,7 +131,7 @@ function ViewBill() {
     <>
       {role === "manager" ? <AdminNavbar /> : <WorkerNavbar />}
 
-      {/* ⭐ NEW: Search Bar */}
+      {/* Search Bar */}
       <div className="search-bar-container">
         <input
           type="text"
@@ -170,79 +166,49 @@ function ViewBill() {
 
               {editingBillId === bill._id ? (
                 <div className="bill-details">
-                  <p>
-                    <strong>{t("Type")}:</strong>
-                  </p>
+                  <p><strong>{t("Type")}:</strong></p>
                   <input
                     name="type"
                     value={editData.type}
                     onChange={handleEditChange}
                   />
-
-                  <p>
-                    <strong>{t("Date")}:</strong>
-                  </p>
+                  <p><strong>{t("Date")}:</strong></p>
                   <input
                     type="date"
                     name="date"
                     value={editData.date}
                     onChange={handleEditChange}
                   />
-
-                  <p>
-                    <strong>{t("Amount")}:</strong>
-                  </p>
+                  <p><strong>{t("Amount")}:</strong></p>
                   <input
                     type="number"
                     name="amount"
                     value={editData.amount}
                     onChange={handleEditChange}
                   />
-
-                  <p>
-                    <strong>{t("Bill No")}:</strong>
-                  </p>
+                  <p><strong>{t("Bill No")}:</strong></p>
                   <input
                     name="billNumber"
                     value={editData.billNumber}
                     onChange={handleEditChange}
                   />
-
-                  <button
-                    onClick={() => saveEdit(bill._id)}
-                    className="save-btn"
-                  >
+                  <button onClick={() => saveEdit(bill._id)} className="save-btn">
                     {t("Save")}
                   </button>
-                  <button
-                    onClick={() => setEditingBillId(null)}
-                    className="cancel-btn"
-                  >
+                  <button onClick={() => setEditingBillId(null)} className="cancel-btn">
                     {t("Cancel")}
                   </button>
                 </div>
               ) : (
                 <div className="bill-details">
-                  <p>
-                    <strong>{t("Type")}:</strong> {bill.type || t("N/A")}
-                  </p>
-                  <p>
-                    <strong>{t("Date")}:</strong> {formatDate(bill.date)}
-                  </p>
-                  <p>
-                    <strong>{t("Amount")}:</strong> ₹{bill.amount || 0}
-                  </p>
-                  <p>
-                    <strong>{t("Bill No")}:</strong> {bill.billNumber || t("N/A")}
-                  </p>
-
+                  <p><strong>{t("Type")}:</strong> {bill.type || t("N/A")}</p>
+                  <p><strong>{t("Date")}:</strong> {formatDate(bill.date)}</p>
+                  <p><strong>{t("Amount")}:</strong> ₹{bill.amount || 0}</p>
+                  <p><strong>{t("Bill No")}:</strong> {bill.billNumber || t("N/A")}</p>
                   <button onClick={() => startEdit(bill)} className="edit-btn">
                     {t("Edit")}
                   </button>
-                  <button
-                    onClick={() => handleDelete(bill._id)}
-                    className="delete-btn"
-                  >
+                  <button onClick={() => handleDelete(bill._id)} className="delete-btn">
                     {t("Delete")}
                   </button>
                 </div>

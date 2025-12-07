@@ -25,7 +25,6 @@ export default function Admin() {
 
   const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const adminId = savedUser?._id;
-  const organization = savedUser?.organization;
 
   const [admin, setAdmin] = useState(null);
   const [adminBills, setAdminBills] = useState([]);
@@ -35,29 +34,29 @@ export default function Admin() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-  if (!adminId || !organization) return;
+    if (!adminId) return;
 
-  setLoading(true);
-  setError("");
+    setLoading(true);
+    setError("");
 
-  const fetchProfile = axios.get(`http://localhost:5000/profile/${adminId}`);
-  const fetchAdminBills = axios.get(`http://localhost:5000/bills/${adminId}`);
-  const fetchOrgBills = axios.get(`http://localhost:5000/bills/org/${organization}/${adminId}`);
-  const fetchWorkers = axios.get(`http://localhost:5000/workers/accepted/${adminId}`);
+    const fetchProfile = axios.get(`http://localhost:5000/profile/${adminId}`);
+    const fetchAdminBills = axios.get(`http://localhost:5000/bills/${adminId}`);
+    const fetchOrgBills = axios.get(`http://localhost:5000/bills/org/${adminId}`);
+    const fetchWorkers = axios.get(`http://localhost:5000/workers/accepted/${adminId}`);
 
-  Promise.all([fetchProfile, fetchAdminBills, fetchOrgBills, fetchWorkers])
-    .then(([profileRes, adminBillsRes, orgBillsRes, workersRes]) => {
-      setAdmin(profileRes.data.user || {});
-      setAdminBills(adminBillsRes.data.bills || []);
-      setOrgBills(orgBillsRes.data.bills || []);
-      setWorkersList(workersRes.data.workers || []);
-    })
-    .catch((err) => {
-      console.error("Admin fetch error:", err);
-      setError(t("Failed to load dashboard data. Check backend."));
-    })
-    .finally(() => setLoading(false));
-}, [adminId, organization, t]);
+    Promise.all([fetchProfile, fetchAdminBills, fetchOrgBills, fetchWorkers])
+      .then(([profileRes, adminBillsRes, orgBillsRes, workersRes]) => {
+        setAdmin(profileRes.data.user || {});
+        setAdminBills(adminBillsRes.data.bills || []);
+        setOrgBills(orgBillsRes.data.bills || []);
+        setWorkersList(workersRes.data.workers || []);
+      })
+      .catch((err) => {
+        console.error("Admin fetch error:", err);
+        setError(t("Failed to load dashboard data. Check backend."));
+      })
+      .finally(() => setLoading(false));
+  }, [adminId, t]);
 
   const workersCount = workersList.length;
   const adminBillsCount = adminBills.length;
@@ -134,7 +133,7 @@ export default function Admin() {
 
             <div className="profile-right">
               <h2 className="admin-name">{admin?.name || t("Manager")}</h2>
-              <p className="admin-org">{admin?.organization || organization}</p>
+              <p className="admin-org">{admin?.organization || "—"}</p>
 
               <div className="profile-stats">
                 <div className="stat mini glass">
@@ -146,7 +145,7 @@ export default function Admin() {
                   <div className="stat-value">{workersCount}</div>
                 </div>
                 <div className="stat mini glass">
-                  <div className="stat-label">{t("Org Bills")}</div>
+                  <div className="stat-label">{t("Accepted Workers' Bills")}</div>
                   <div className="stat-value">{orgBillsCount}</div>
                 </div>
               </div>

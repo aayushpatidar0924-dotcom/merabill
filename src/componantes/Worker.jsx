@@ -22,8 +22,8 @@ function lastNMonthsKeys(n = 6) {
 
 export default function WorkerDashboard() {
   const { t } = useTranslation();
-  const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const workerId = savedUser?._id;
+  const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const workerId = savedUser?._id || null;
 
   const [worker, setWorker] = useState(null);
   const [workerBills, setWorkerBills] = useState([]);
@@ -39,15 +39,13 @@ export default function WorkerDashboard() {
     const fetchData = async () => {
       try {
         const [profileRes, billsRes] = await Promise.all([
+          
           axios.get(`http://localhost:5000/profile/${workerId}`),
           axios.get(`http://localhost:5000/bills/${workerId}`)
         ]);
 
         const user = profileRes.data.user || {};
         const bills = billsRes.data.bills || [];
-
-        console.log("Fetched Worker:", user);
-        console.log("Fetched Bills:", bills);
 
         setWorker(user);
         setWorkerBills(bills);
@@ -70,32 +68,33 @@ export default function WorkerDashboard() {
       return;
     }
 
-    const sent = (worker.requestSentTo || []).map(String);
-    const accepted = (worker.acceptedAdmins || []).map(String);
+    const sent = (worker.requestSentTo || []).map(id => String(id));
+    const accepted = (worker.acceptedAdmins || []).map(id => String(id));
+    const allIds = Array.from(new Set([...sent, ...accepted]));
 
-    if (sent.length === 0 && accepted.length === 0) {
+    if (allIds.length === 0) {
       setAcceptedAdminsList([]);
       setPendingRequestsList([]);
       return;
     }
 
-    const allIds = Array.from(new Set([...sent, ...accepted]));
-
     const fetchAdminsByIds = async () => {
       try {
         const res = await axios.post("http://localhost:5000/get-admin-details", { ids: allIds });
+        console.log("Admins fetched from backend:", res.data.admins);
+
         if (res.data.success) {
           const admins = res.data.admins || [];
-          const byId = admins.reduce((acc, a) => {
-            acc[String(a._id)] = a;
-            return acc;
-          }, {});
+          const byId = {};
+          admins.forEach(a => { byId[String(a._id)] = a; });
 
           setAcceptedAdminsList(
-            accepted.map(id => byId[id]).filter(Boolean)
+            accepted.map(id => byId[id]).filter(a => a !== undefined)
           );
           setPendingRequestsList(
-            sent.filter(id => !accepted.includes(id)).map(id => byId[id]).filter(Boolean)
+            sent.filter(id => !accepted.includes(id))
+                .map(id => byId[id])
+                .filter(a => a !== undefined)
           );
         } else {
           setAcceptedAdminsList([]);

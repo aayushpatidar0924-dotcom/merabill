@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
   role: String,
   organization: String,
   profileImage: String,
-
   requestSentTo: { type: [String], default: [] }, // adminIds
   acceptedAdmins: { type: [String], default: [] }, // adminIds
 });
@@ -286,22 +285,26 @@ app.put("/profile/:id/photo", upload.single("profileImage"), async (req, res) =>
     res.status(500).json({ success: false, message: "Error uploading photo" });
   }
 });
+
 /* ===========================
    GET ADMIN DETAILS BY IDS
 ===========================*/
 app.post("/get-admin-details", async (req, res) => {
   const { ids } = req.body;
+
   try {
-    const objectIds = ids.map(id => mongoose.Types.ObjectId(id)); // convert to ObjectId
-    const admins = await User.find({ _id: { $in: objectIds }, role: "admin" })
-                             .select("_id name email organization");
+    // Convert all ids to ObjectId correctly
+    const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
+
+    const admins = await User.find({ _id: { $in: objectIds } })
+      .select("_id name email organization");
+
     res.json({ success: true, admins });
   } catch (err) {
     console.log("Get Admin Details Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
 
 /* ===========================
    ADD BILL  
@@ -342,18 +345,15 @@ app.get("/bills/:userId", async (req, res) => {
     res.status(500).json({ success: false, message: "Error fetching bills" });
   }
 });
-
-/* ===========================
-   GET ORG BILLS (Admin only accepted workers)
-===========================*/
-app.get("/bills/org/:organization/:adminId", async (req, res) => {
+// GET BILLS FOR MANAGER - ANY ORG, ONLY ACCEPTED WORKERS
+app.get("/bills/org/:adminId", async (req, res) => {
   try {
-    const { organization, adminId } = req.params;
+    const { adminId } = req.params;
 
-    // Only accepted workers
+    // Sirf wo workers jinhone request accept ki hai
     const workers = await User.find({
-      organization,
       acceptedAdmins: { $in: [adminId] },
+      role: "worker",
     }).select("_id");
 
     const ids = workers.map((u) => u._id);
@@ -368,6 +368,7 @@ app.get("/bills/org/:organization/:adminId", async (req, res) => {
     res.status(500).json({ success: false, message: "Error fetching bills" });
   }
 });
+
 
 /* ===========================
    GET ACCEPTED WORKERS
